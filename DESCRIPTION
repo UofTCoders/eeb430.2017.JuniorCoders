@@ -1,0 +1,21 @@
+Package: eeb430.2017.JuniorCoders
+Title: Team Junior Coders Final Report for EEB430 at UofT
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Luke", "Johnston", email = "lwjohnst@gmail.com", role = c("ctb", "cre")),
+    person("Leila", "Krichel", role = c("aut")),
+    person("Farhan", "Majumder", role = c("aut")),
+    person("Jeffrey", "Nguyen", role = c("aut")),
+    person("Rui", "Zhou", role = c("aut")),
+    person("UofTCoders", role = c("ctb", "cph"))
+    )
+Description: This is the final report repository for the student team Junior Coders for 
+    the EEB430 course at the University of Toronto.
+Depends: R (>= 3.4.2)
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Imports: devtools
