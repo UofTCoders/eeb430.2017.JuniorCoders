@@ -3,29 +3,37 @@ title: "CONDUCT.md"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+---
+title: "Code of Conduct"
+output: html_notebook
+---
 
 
-Must be considerate and respectful
+#Team Name: Junior Coders
+
+Facilitator: Leila
+Recorder: Farhan
+Organizer: Jeffrey
+Support: Rui
+
+#Emails:
+1) leila.krichel@mail.utoronto.ca
+2) Farhanmajumder10@gmail.com
+3)Jeffrey.a.nguyen@hotmail.com
+4) r.zhou1996@gmail.com
+
+#Codes of Conduct:
+1) Do you job. Let someone know if you haven't 
+2) Be Respectful
+3) Be prompt with e-mails - check daily
+4) Resolve conflicts face to face.  Use judgement about establishing a meeting
+5) Let someone know if you can't make a meeting or if you're going to be late
+
+#Roles
+Writing = leila
+Math = Rui
+Coding = Farhan
+Research = Jeffrey
+
+#Goals for Meetings
+Get 2 papers each - do a brief summary.  Try not to bring the same paper.
