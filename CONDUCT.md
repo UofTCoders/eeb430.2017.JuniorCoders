@@ -14,8 +14,8 @@ Support: Rui
 # Emails
 
 1) leila.krichel@mail.utoronto.ca
-2) Farhanmajumder10@gmail.com
-3)Jeffrey.a.nguyen@hotmail.com
+2) Farhanmajumder10@gmail.com 
+3) Jeffrey.a.nguyen@hotmail.com
 4) r.zhou1996@gmail.com
 
 # Codes of Conduct
