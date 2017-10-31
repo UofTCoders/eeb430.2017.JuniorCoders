@@ -14,6 +14,8 @@
     ## 
     ##     intersect, setdiff, setequal, union
 
+   modified dataset
+
     marine2 <- plyr::rename(marine,c( "Type of feeding interaction" = "feeding_type", "Predator standard length" = "predator_standars_length", "Mean annual temp" = "temp", "Predator mass" = "predator_mass", "Prey mass" = "prey_mass","Predator  taxon" = "Predator_taxon","Geographic location" = "geographic", "Specific habitat"
                                       = "habitat"))
     marine2
@@ -58,6 +60,8 @@
     ## #   temp <dbl>, `SD annual temp` <dbl>, `Mean PP` <dbl>, `SD PP` <dbl>,
     ## #   Reference <chr>, habitat <chr>, `Notes / assumptions` <chr>
 
+
+
     g <- ggplot(marine2, color = predator_taxon)
     g+
       geom_boxplot(aes(x = feeding_type, y = predator_mass))+
@@ -67,14 +71,30 @@
 
 # Possible results figures
 
-![](123_files/figure-markdown_strict/unnamed-chunk-4-1.png)
+- figure 1:biomass vs. feeding type, box plot
+
+![](plan_files/figure-markdown_strict/unnamed-chunk-4-1.png)
+
+- figure 2:predator mass vs. prey mass in log scale, facet by feeding type with linear regression.
+facet by taxon/apecies or general can also be added.
 
     g + 
       geom_point(aes(x = log(prey_mass), y = log(predator_mass)))+
       geom_smooth(aes(x = log(prey_mass), y = log(predator_mass)),method = "glm")+
      facet_wrap(~feeding_type)
 
-![](123_files/figure-markdown_strict/unnamed-chunk-5-1.png)
+![](plan_files/figure-markdown_strict/unnamed-chunk-5-1.png)
+
+- figure 3:predator mass vs. annual average temperature
+
+    g+
+      geom_point(aes(x = temp, y = predator_mass))
+
+![](plan_files/figure-markdown_strict/unnamed-chunk-6-1.png)
+
+# Possible results tables
+
+frequency of each feeding tyoe/ location
 
     marine2 %>% 
       group_by(feeding_type) %>% 
@@ -89,12 +109,7 @@
     ## 4             predacious 12394
     ## 5 predacious/piscivorous   161
 
-    g+
-      geom_point(aes(x = temp, y = predator_mass))
 
-![](123_files/figure-markdown_strict/unnamed-chunk-6-1.png)
-
-# Possible results tables
 
     marine2 %>% 
       group_by(geographic) %>% 
@@ -146,3 +161,8 @@
 
 # possible analysis
 
+- biomass vs. lattitude: converge lattitude into number, try simple linear model
+- biomass/length vs. feeding behaviour: chi-square ?
+- predator-prey mass: furthur analysis on each species/ confidence interval
+- feeding behaviour vs. location/temp: bar chart?/pie chart?
+- biomass/length vs. depth: linear model
