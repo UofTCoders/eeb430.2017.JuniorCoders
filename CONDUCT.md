@@ -30,6 +30,7 @@ Support: Rui
 5) Let someone know if you can't make a meeting or if you're going to be late
 
 #Roles
+
 Writing = leila
 Math = Rui
 Coding = Farhan
