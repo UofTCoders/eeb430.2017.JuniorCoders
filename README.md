@@ -37,3 +37,6 @@
     - Research Interests: No specific interest 
     - Team role: Support
     - Project responsibility: Mathematical support 
+    
+Team role rotations will occur at the last meeting of every week (every Thursday). 
+
