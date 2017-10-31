@@ -6,10 +6,10 @@ output: html_notebook
 
 # Team Name: Junior Coders
 
-Facilitator: Leila
-Recorder: Farhan
-Organizer: Jeffrey
-Support: Rui
+- Facilitator: Leila
+- Recorder: Farhan
+- Organizer: Jeffrey
+- Support: Rui
 
 # Emails
 
