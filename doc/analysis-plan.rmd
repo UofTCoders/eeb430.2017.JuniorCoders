@@ -1,0 +1,82 @@
+---
+title: "Analysis-plan"
+author:
+    - Rui Zhou 
+output: md_document
+---
+
+# possible analysis
+
+- biomass vs. latitude: converge latitude into number, try simple linear model
+- biomass/length vs. feeding behavior: chi-square ?
+- predator-prey mass: further analysis on each species/ confidence interval
+- feeding behavior vs. location/temp: bar chart?/pie chart?
+- biomass/length vs. depth: linear model
+
+
+## required pachage and modification on file
+```{r,echo=FALSE,eval=TRUE,warning=FALSE}
+library(ggplot2)
+library(dplyr)
+```
+
+```{r,eval=TRUE,echo=FALSE,warning=FALSE}
+library(readr)
+marine <- read_csv("../data/Predator_and_prey_body_sizes_in_marine_food_webs_vsn4.csv")
+View(marine)
+```
+
+
+```{r,eval=TRUE,echo=FALSE}
+    marine2 <- plyr::rename(marine,c( "Type of feeding interaction" = "feeding_type", "Predator standard length" = "predator_standars_length", "Mean annual temp" = "temp", "Predator mass" = "predator_mass", "Prey mass" = "prey_mass","Predator  taxon" = "Predator_taxon","Geographic location" = "geographic", "Specific habitat"
+                                      = "habitat"))
+```
+
+# possible figure
+
+- figure 1:biomass vs. feeding type, box plot
+
+```{r,warning=FALSE,eval=TRUE,echo=FALSE}
+    g <- ggplot(marine2, color = predator_taxon)
+    g+
+      geom_boxplot(aes(x = feeding_type, y = predator_mass))+
+      ylim(0,5000)
+```
+
+- figure 2:predator mass vs. prey mass in log scale, facet by feeding type with linear regression.
+
+facet by taxon/species can also be added.
+
+```{r,eval=TRUE,echo=FALSE}
+    g + 
+      geom_point(aes(x = log(prey_mass), y = log(predator_mass)))+
+      geom_smooth(aes(x = log(prey_mass), y = log(predator_mass)),method = "glm")+
+     facet_wrap(~feeding_type)
+```
+
+- figure 3:predator mass vs. annual average temperature
+
+```{r,eval=TRUE,echo=FALSE}
+    g+
+      geom_point(aes(x = temp, y = predator_mass))
+```
+
+# Possible results tables
+
+-frequency of each feeding type/ location
+
+```{r,warning=FALSE,eval=TRUE,echo=FALSE}
+    marine2 %>% 
+      group_by(feeding_type) %>% 
+      tally()
+
+    marine2 %>% 
+      group_by(geographic) %>% 
+      tally()
+    
+    marine2 %>% 
+      mutate(habitat=gsub("Coastal bay", "Coastal Bay", habitat)) %>% 
+      mutate(habitat=gsub("shelf", "Shelf", habitat)) %>%
+       group_by(habitat) %>% 
+       tally()
+```
