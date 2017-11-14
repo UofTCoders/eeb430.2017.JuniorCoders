@@ -1,5 +1,5 @@
 ---
-title: "objectives.md"
+title: "Objectives"
 output: html_document
 ---
 
