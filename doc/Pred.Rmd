@@ -9,12 +9,12 @@ library(readxl)
 ```
 
 ```{r}
-Pred <- read_csv("../data/Predator.csv",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
+Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
 problems(Pred)
 ```
 
 ```{r}
-colnames(Pred) <- c("Record_number", "In-ref_ID", "Individual_ID", "Predator", "Predator_common_name", "Predator_taxon","Predator_lifestage", "Type_of_feeding interaction","Predator_length", "Predator_length_unit", "Predator_dimension_measured", "Predator_standard_length", "Predator_fork_length", "Predator_total_length", "Predator_TL/FL/SL_conversion reference", "Standardised_predator_length", "Predator_measurement_type", "Predator_length-mass_conversion method", "Predator_length-mass_conversion_reference", "Predator_quality_of_length-mass_conversion", "Predator_mass", "Predator_mass_unit","Predator_mass_check", "Predator_mass_check diff", "Predator_ratio_mass/mass", "SI_predator_mass","Diet_coverage", "Prey", "Prey_common_name", "Prey_taxon", "Prey_length", "Prey_length_unit","Prey_conversion_to_length method", "Prey_quality_of_conversion_to_length", "Prey_conversion_to_length reference", "SI_prey_length", "Prey_dimension_measured", "Prey_width", "Prey_width_unit", "Prey_measurement_type", "Prey_mass", "Prey_mass_unit", "Prey_mass_check", "Prey_mass_check_diff",  "Prey_ratio_mass/mass", "SI_prey_mass", "Prey_conversion_to_mass_method", "Prey_conversion_to_mass_reference", "Prey_quality_of_conversion_to_mass", "Geographic_location", "Latitude", "Longitude", "Depth", "Mean_annual_temp", "SD_annual_temp", "Mean_PP", "SD_PP", "Reference", "Specific_habitat","Notes_/_assumptions")
+colnames(Pred) <- gsub(" ", "_", colnames(Pred))
 ```
 
 
