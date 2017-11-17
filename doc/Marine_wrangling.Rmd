@@ -1,0 +1,264 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(broom)
+```
+
+```{r}
+Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
+problems(Pred)
+```
+
+```{r}
+colnames(Pred) <- gsub(" ", "_", colnames(Pred))
+```
+
+
+```{r}
+Pred 
+
+Pred$Latitude <- Pred$Latitude %>% 
+    sub("º", "d",.)
+
+library(sp)
+Pred$Latitude <- as.numeric(char2dms(Pred$Latitude))
+
+```
+```{r}
+Pred <- Pred %>%
+mutate(Specific_habitat=gsub("Coastal bay", "Coastal Bay", Specific_habitat)) %>%
+mutate(Specific_habitat=gsub("shelf", "Shelf", Specific_habitat))
+```
+
+
+# pred_abundance dataset 
+
+This dataset is a subset of the marine dataset. What does it include?: 
+- Predator observations that are larger than 800
+- Prey observations that are between 50 and 1000
+- observations that are above 1000m depth
+```{r}
+# pred_abundance <- Pred %>% 
+#     group_by(Predator) %>% 
+#     tally() %>% 
+#     arrange(desc(n)) %>% 
+#     filter(n > 800)
+# pred_abundance
+# 
+# prey_abundance <- Pred %>% 
+#    group_by(Prey) %>% 
+#     tally() %>% 
+#     arrange(desc(n)) %>% 
+#     filter(n > 50 & n < 3000)
+# prey_abundance
+
+pred_prey_dataset <- Pred %>%
+    # filter(Predator %in% pred_abundance$Predator) %>%
+    # filter(Prey %in% prey_abundance$Prey) %>%
+    filter(Depth < 1000) %>% 
+    #filter(Predator_lifestage == "adult") %>% 
+    group_by(Predator_common_name,Prey_common_name,Specific_habitat, Type_of_feeding_interaction, Predator_lifestage) %>% 
+    summarise(Latitude = mean(Latitude),Predator_mass = mean(Predator_mass),Prey_mass = mean(Prey_mass),Depth = mean(Depth))
+    
+    
+pred_prey_dataset
+
+
+```
+
+# log predator mass vs log prey mass
+
+As prey mass increases so does predator mass. When plotted this way, the data clusters into 4-5 blobs -- it's possible that there might be something underlying this pattern. 
+
+```{r}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass))) +
+    geom_point() +
+    geom_smooth(method = "glm")
+  
+
+```
+
+# Colour by specific habitat
+
+Same plot, but now we colour data based on what habitat the predator-prey interaction is. 
+It appears that habitat predicts the observed pattern... so what is it about habitat that underlies this pattern that as prey size increases so does predator size?
+```{r, fig.width=7, fig.height=4}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point() 
+```
+# Colour by feeding interaction
+
+Same plot, only we colour the data by the kind of feeding pattern the predator exhibits. 
+It looks like this could also explain the data, although maybe not as strongly as habitat -- you see that predacious feeding spans the extremes, and picsivorous feeding does too. But these are really general feeding types... are feeding types found in more habitats than in others? 
+
+```{r, fig.width=7, fig.height=4}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Type_of_feeding_interaction)) +
+    geom_point() 
+```
+
+# Predacious data
+
+```{r, fig.width=7, fig.height=4}
+
+predacious <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == 'predacious') %>% 
+    select(Predator_mass, Prey_mass, Type_of_feeding_interaction, Prey_common_name, Specific_habitat) 
+   
+predacious %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Prey_common_name)) +
+    geom_point()
+
+# looking at the predacious data, there's two extremes:
+# squid prey seem to make predator prey really big
+# on the other hand, copepods and invertebrates appear to make predators really small
+# an energy transfer issue? 
+
+predacious %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point() 
+
+# this might just be a function of the ice zone having a lot of observations, but being in the ice zone or nearshore makes you small, while living in the shelf makes you large
+
+```
+
+# Planktivorous data
+ 
+```{r}
+planktivorous <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == 'planktivorous') %>% 
+    select(Predator_mass, Prey_mass, Type_of_feeding_interaction, Prey_common_name, Specific_habitat)
+
+planktivorous %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Prey_common_name)) +
+    geom_point() 
+
+planktivorous %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point()
+
+# all planktivorous species are found in the ice zone, and they're all really small
+# this is probably driving that pattern against Bergmann's rule 
+
+```
+
+# Piscivorous data
+
+```{r, fig.width=7, fig.height=4}
+piscivorous <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == 'piscivorous') %>% 
+    select(Predator_mass, Prey_mass, Type_of_feeding_interaction, Prey_common_name, Specific_habitat) 
+
+piscivorous %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Prey_common_name)) +
+    geom_point()
+
+# You see some grouping here, it's a little more spaced out than what you saw for predacious, but there is definitely some grouping
+
+piscivorous%>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point()
+
+# Specific habitat is also a really good indicator for prey size - predator size
+```
+
+# Facet wrapping
+
+```{r}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Predator_common_name)) +
+    facet_grid(Specific_habitat ~ Type_of_feeding_interaction) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+ggsave("facetwrapping.jpg", width = 50, height = 40, units = "cm")
+```
+
+# Some latitude stuff
+
+```{r}
+Pred %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = abs(Latitude))) +
+    geom_point(alpha = 0.3)
+```
+
+```{r}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Predator_common_name)) +
+    facet_grid(Specific_habitat ~ Type_of_feeding_interaction) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+ ggsave("facetwrapping_adults.jpg", width = 50, height = 40, units = "cm")
+```
+
+```{r}
+pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == "planktivorous") %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass))) +
+    facet_wrap(~ Specific_habitat) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+# ggsave("facetwrappingplanktivorous.jpg", width = 50, height = 40, units = "cm")
+```
+
+```{r}
+pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == "piscivorous") %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass))) +
+    facet_wrap(~ Specific_habitat) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+# ggsave("facetwrappingpiscivorous.jpg", width = 50, height = 40, units = "cm")
+```
+
+```{r}
+pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == "predacious") %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass))) +
+    facet_wrap(~ Specific_habitat) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+# ggsave("facetwrappingpredacious.jpg", width = 50, height = 40, units = "cm")
+```
+
+
+
+```{r}
+pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == "predacious") %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass))) +
+     facet_grid(Predator_lifestage ~ Specific_habitat) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+ ggsave("facetwrappinglifestage.jpg", width = 50, height = 40, units = "cm")
+```
+```
+
+
+Before we were thinking Prey and Predator have a really strong correlation but there's nothing really here! 
+Predator is strongly correlated with their habitat, which has its own depth. 
+WHAT YOU EAT, AND WHERE YOU EAT affects the correlation between predator and prey mass. 
+GLM: look at interactions between specific habitat, type of feeding interactions?? 
+Only when we looked at generalist eaters did habitat
+
+
+
+
+
+
+
+
+
