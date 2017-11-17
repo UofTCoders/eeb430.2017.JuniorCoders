@@ -7,11 +7,11 @@
 
 # Introduction to the project
 
-    Our project will involve determining how variables such as predator feeding behaviour and size are affected by the interactions with prey, environmental variables, and geographic locations. Predators play an important role in determining the abundance and distribution of species within an ecosystem. Ultimately, they have a significant influence on the overall diversity and function of an ecosystem. For this reason, it is important to determine what factors are most important for predicting predator size and feeding behaviour, as they may be a significant predictor of ecosystem structure. 
+Our project will involve determining how variables such as predator feeding behaviour and size are affected by the interactions with prey, environmental variables, and geographic locations. Predators play an important role in determining the abundance and distribution of species within an ecosystem. Ultimately, they have a significant influence on the overall diversity and function of an ecosystem. For this reason, it is important to determine what factors are most important for predicting predator size and feeding behaviour, as they may be a significant predictor of ecosystem structure. 
 
 # Description of the data
 
-    This dataset describes predator and prey sizes for various species found in different geographical areas. Sizes are measured as different indicators of mass and length, and information about the predator’s feeding types are given. This data is also gathered across various environmental conditions such as latitude and longitude, sea surface temperature, depth, and primary productivity. For this project, we are planning on using the variables feeding types and predator mass/length as dependent variables. Indepedent variables will include data such as geographic location, habitat type, prey mass, depth, and temperature.  
+This dataset describes predator and prey sizes for various species found in different geographical areas. Sizes are measured as different indicators of mass and length, and information about the predator’s feeding types are given. This data is also gathered across various environmental conditions such as latitude and longitude, sea surface temperature, depth, and primary productivity. For this project, we are planning on using the variables feeding types and predator mass/length as dependent variables. Indepedent variables will include data such as geographic location, habitat type, prey mass, depth, and temperature.  
 
 # Team description 
 
