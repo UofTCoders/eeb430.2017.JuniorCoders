@@ -1,0 +1,30 @@
+---
+title: "R Notebook"
+---
+
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+```{r}
+Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
+problems(Pred)
+```
+
+```{r}
+colnames(Pred) <- gsub(" ", "_", colnames(Pred))
+```
+
+
+
+
+```{r}
+Pred
+```
+
+
+
+
+
+

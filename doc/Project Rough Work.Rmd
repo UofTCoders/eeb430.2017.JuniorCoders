@@ -1,0 +1,152 @@
+---
+title: "Project Rough Work"
+author: "Farhan Majumder"
+date: "November 16, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Setup
+```{r}
+library(dplyr)
+```
+
+
+# Dataset
+
+```{r}
+head(Pred)
+```
+
+# Day 1 - Nov 16
+
+```{r}
+Pred %>% 
+    group_by(Geographic_location) %>% 
+    tally()
+```
+
+```{r}
+Pred %>% 
+    group_by(Predator, Predator_common_name) %>%
+    tally() %>% 
+    filter(n > 1000)
+```
+
+```{r}
+Pred %>% 
+    group_by(Predator, Predator_common_name, Geographic_location) %>% 
+    tally() %>% 
+    filter(n > 1000)
+```
+
+```{r}
+Pred %>% 
+    group_by(Geographic_location) %>% 
+    filter(Predator_common_name == 'Bluefish') %>% 
+    tally()
+
+Pred %>% 
+    group_by(Geographic_location) %>% 
+    filter(Predator_common_name == 'Atlantic bluefin tuna') %>% 
+    tally()
+```
+
+Using above work; we see that tuna is a species that is very ubiquitous. Looking at the wikipedia article on Albacore, we have a phylogeny of the genus Thunnus. 
+
+The four species in question: (from most derived to basal) 
+- Yellowfin tuna (T. albacares)
+- Bigeye tuna (T. obesus)
+- Atlantic bluefin tuna (T. thynnus)
+- Albacore (T. alalunga)
+
+```{r}
+Pred %>% 
+    group_by(Predator_common_name, Geographic_location, Latitude, Specific_habitat) %>% 
+    filter(Predator_common_name == 'Albacore'| 
+           Predator_common_name == 'Atlantic bluefin tuna'|
+           Predator_common_name == 'Yellowfin tuna'|
+           Predator_common_name == 'Bigeye tuna') %>% 
+    tally()
+```
+
+Looking at Latitude data, we see that these four species of tuna reside within two distinct latitudes: (approx)40N and 12S
+In other words, they are either in the North Atlantic, or South Pacific
+
+Leila's data: 
+grouped by depth 
+seems that three of spp are deep sea spp (Abyssopelagic). 
+Other one is shallow depth (Epi/Mesopelagic) -> Bluefin.
+
+```{r}
+Pred %>% 
+    group_by(Predator_common_name, Predator_mass) %>% 
+    filter(Predator_common_name == 'Albacore'| 
+           Predator_common_name == 'Atlantic bluefin tuna'|
+           Predator_common_name == 'Yellowfin tuna'|
+           Predator_common_name == 'Bigeye tuna') %>% 
+    ggplot(aes(x = Predator_common_name, y = log(Predator_mass))) +
+    geom_boxplot()
+```
+
+# Day 2 - Nov 17
+
+```{r}
+Pred %>% 
+    group_by(Predator_common_name, Prey_common_name) %>% 
+    filter(Predator_common_name == 'Albacore'| 
+           Predator_common_name == 'Atlantic bluefin tuna'|
+           Predator_common_name == 'Yellowfin tuna'|
+           Predator_common_name == 'Bigeye tuna') %>% 
+    tally()
+```
+
+
+```{r}
+Pred %>% 
+    group_by(Predator, Predator_common_name) %>%
+    tally() %>% 
+    filter(n > 1000)
+```
+
+
+```{r}
+Pred %>% 
+    group_by(Depth) %>%
+    filter(Depth > 200 & Depth < 1000) %>% 
+    summarise(mean_mass = mean(Predator_mass)) %>% 
+    ggplot(aes(x = Depth, y = mean_mass)) +
+    geom_point() +
+    geom_smooth(method = glm)
+    
+    
+Pred %>% 
+    group_by(Depth, Mean_annual_temp, Latitude) %>%
+    filter(Depth > 200 & Depth < 1000) %>% 
+    summarise(mean_mass = mean(Predator_mass))
+```
+
+
+
+
+```{r}
+Pred %>% 
+    group_by(Predator_common_name, Type_of_feeding_interaction, Specific_habitat) %>% 
+    tally() %>% 
+    filter(Type_of_feeding_interaction == "predacious", Specific_habitat == "offshelf and on shelf")
+```
+
+
+```{r}
+Pred %>% 
+    group_by(Specific_habitat) %>% 
+    ggplot(aes(x = Specific_habitat, y = Depth)) +
+    geom_boxplot() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+
