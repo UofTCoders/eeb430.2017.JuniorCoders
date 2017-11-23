@@ -346,6 +346,9 @@ install.packages("lme4")
 library(lme4)
 ```
 
+# Linear model 1
+
+Different slope and intercept for habitat.
 
 ```{r}
 lm1 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass)
@@ -355,6 +358,108 @@ ranef(lm1)
 library(broom)
 tidy(lm1,conf.int = T)
 ```
+
+# Linear model 2
+
+Assuming different slopes and intercepts for different habitats and feeding types.
+
+```{r}
+#lm2 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass)|Specific_habitat) + (1 + log(Predator_mass)|Type_of_feeding_interaction), data = filtered_dataset)
+
+
+```
+
+```{r}
+summary(lm2)
+ranef(lm2)
+tidy(lm2,conf.int = T)
+```
+# Linear model 3
+
+Assume same slope but different intercepts in every subgroup (which is every habitat and feeding type).
+
+```{r}
+lm3 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1|Specific_habitat) + (1|Type_of_feeding_interaction), data = filtered_dataset)
+```
+
+
+```{r}
+summary(lm3)
+ranef(lm3)
+tidy(lm3,conf.int = T)
+```
+
+# Linear model 4
+
+Assume different intercepts and slope for every feeding type. 
+
+```{r}
+lm4 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass)
+                                            |Type_of_feeding_interaction), data = filtered_dataset)
+summary(lm4)
+ranef(lm4)
+tidy(lm4,conf.int = T)
+```
+
+# Linear model 5
+
+Assuming different slopes for feeding type but with same intercept. 
+```{r}
+lm5 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (log(Predator_mass) - 1|Type_of_feeding_interaction), data = filtered_dataset)
+
+summary(lm5)
+ranef(lm5)
+```
+
+# Linear model 6
+
+Considers slope itself. 
+
+```{r}
+lm6 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (log(Predator_mass) - 1|Type_of_feeding_interaction) + (1|Specific_habitat), data = filtered_dataset)
+
+summary(lm6)
+ranef(lm6)
+tidy(lm4,conf.int = T)
+```
+
+# Linear model 7
+
+Possible interaction effect for habitat and feeding type. In model 7, the slope is affected by the interaction btween habitat type and feeding type. 
+
+```{r}
+lm7 <- lmer(log(Prey_mass) ~ log(Predator_mass) + Type_of_feeding_interaction * Specific_habitat * log(Predator_mass) + (1|Specific_habitat) + (1|Type_of_feeding_interaction), data = filtered_dataset)
+
+summary(lm7)
+ranef(lm7)
+tidy(lm7,conf.int = T)
+```
+
+
+# AIC
+
+```{r}
+install.packages("MuMIn")
+library(MuMIn)
+```
+
+```{r}
+model.sel(lm1, lm2, lm3, lm4, lm6, lm7, rank = AIC)
+```
+
+Take out model 5 -- assumption doens't make sense. 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
