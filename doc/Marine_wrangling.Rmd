@@ -339,7 +339,7 @@ pred_prey_dataset %>%
     geom_smooth(method = 'glm', colour = 'black')
 ```
 
-# Modelling 
+# Model 
 
 ```{r}
 install.packages("lme4")
