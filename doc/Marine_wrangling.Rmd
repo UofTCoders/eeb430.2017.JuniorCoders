@@ -346,6 +346,11 @@ install.packages("lme4")
 library(lme4)
 ```
 
+```{r}
+filtered_dataset <- Pred
+```
+
+
 # Linear model 1
 
 Different slope and intercept for habitat.
@@ -364,7 +369,7 @@ tidy(lm1,conf.int = T)
 Assuming different slopes and intercepts for different habitats and feeding types.
 
 ```{r}
-#lm2 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass)|Specific_habitat) + (1 + log(Predator_mass)|Type_of_feeding_interaction), data = filtered_dataset)
+lm2 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass)|Specific_habitat) + (1 + log(Predator_mass)|Type_of_feeding_interaction), data = filtered_dataset)
 
 
 ```
