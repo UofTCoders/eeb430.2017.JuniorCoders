@@ -7,9 +7,9 @@ output: html_document
 
 **Introduction**
 
-Animals come in many different shapes and sizes and they can be seen interacting with each other in many forms.  One type of interaction between organisms is the predator-prey interaction which allows us to generate food webs. Animals with a large size have the ability to eat larger prey compared to predators with smaller size, therefore, they would be at a higher trophic level.  In the article written by Cohen et al(1993),  they compared the ratio of predator-prey size of the animals from aquatic to terrestrial to coastal to marine and they discovered that in these predator-prey interactions, 90% of predators are bigger than the prey that they eat.  In general, literature suggests that there is a correlation between prey mass and predator mass (Brose 2006).  However, are there other factors that can affect predator-prey mass?  
+Animals come in many different shapes and sizes and they can be seen interacting with each other in many forms.  One type of interaction between organisms is the predator-prey interaction which allows us to generate food webs. Animals with a large size have the ability to eat larger prey compared to predators with smaller size, therefore, they would be at a higher trophic level.  There are many articles that compare the ratio between predator-prey interactions(REFERENCES) and they agree that predator mass does increase with prey mass.  However, are there factors that can affect this relationship?  
 
-From the *Marine predator and prey body sizes* dataset created by Barnes et al (2008), we determined that location and feeding behavior are just two of the aforementioned factors that could influence this interaction.  The dataset was contains information about 27 marine locations with 93 types of predators.  
+From the *Marine predator and prey body sizes* dataset created by Barnes et al (2008), we determined that location and feeding behavior are just two of the aforementioned factors that could influence this interaction. The dataset contains information about 27 marine locations with 93 types of predators and 
 
 
 **Results**
