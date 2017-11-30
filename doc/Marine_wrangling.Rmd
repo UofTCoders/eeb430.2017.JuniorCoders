@@ -351,17 +351,31 @@ filtered_dataset <- Pred
 ```
 
 
+```{r}
+null <- glm(log(Prey_mass) ~ log(Predator_mass),data = filtered_dataset) 
+fitted_null <- augment(null) %>% 
+    rename(.fitted_null = .fitted)
+names(fitted_null)
+null_line <- geom_line(aes(x = log.Predator_mass., y = .fitted_null))
+nulllm11 <- bind_cols(fitted_lm11, fitted_null)
+
+```
+
 # Linear model 1
 
+This model says: That for every habitat, predator and prey mass relationships have a different intercept (different starting point), and the effect is has on the slope of the relationship is also different in every habitat.
 Different slope and intercept for habitat.
 
 ```{r}
-lm1 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass)
-                                            |Specific_habitat), data = filtered_dataset)
+lm1 <- lmer(log(Prey_mass) ~ 
+                log(Predator_mass) + 
+                (1 + log(Predator_mass)|Specific_habitat), 
+            data = filtered_dataset)
+
 summary(lm1)
 ranef(lm1)
-library(broom)
 tidy(lm1,conf.int = T)
+
 ```
 
 # Linear model 2
@@ -371,73 +385,49 @@ Assuming different slopes and intercepts for different habitats and feeding type
 ```{r}
 lm2 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass)|Specific_habitat) + (1 + log(Predator_mass)|Type_of_feeding_interaction), data = filtered_dataset)
 
-
-```
-
-```{r}
 summary(lm2)
 ranef(lm2)
 tidy(lm2,conf.int = T)
-```
-# Linear model 3
-
-Assume same slope but different intercepts in every subgroup (which is every habitat and feeding type).
-
-```{r}
-lm3 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1|Specific_habitat) + (1|Type_of_feeding_interaction), data = filtered_dataset)
+fitted_lm2 <- augment(lm2) 
+ggplot(fitted_lm2, aes(x = log.Predator_mass., y = .fixed, colour = Specific_habitat)) +
+    geom_line() 
 ```
 
-
-```{r}
-summary(lm3)
-ranef(lm3)
-tidy(lm3,conf.int = T)
-```
 
 # Linear model 4
 
 Assume different intercepts and slope for every feeding type. 
 
 ```{r}
-lm4 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass)
-                                            |Type_of_feeding_interaction), data = filtered_dataset)
+lm4 <- lmer(log(Prey_mass) ~ 
+                log(Predator_mass) + 
+                (1 + log(Predator_mass)|Type_of_feeding_interaction), data = filtered_dataset)
 summary(lm4)
 ranef(lm4)
 tidy(lm4,conf.int = T)
 ```
 
-# Linear model 5
 
-Assuming different slopes for feeding type but with same intercept. 
-```{r}
-lm5 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (log(Predator_mass) - 1|Type_of_feeding_interaction), data = filtered_dataset)
 
-summary(lm5)
-ranef(lm5)
-```
 
-# Linear model 6
-
-Considers slope itself. 
 
 ```{r}
-lm6 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (log(Predator_mass) - 1|Type_of_feeding_interaction) + (1|Specific_habitat), data = filtered_dataset)
-
-summary(lm6)
-ranef(lm6)
-tidy(lm4,conf.int = T)
+library(tidyverse)
 ```
-
-# Linear model 7
 
 Possible interaction effect for habitat and feeding type. In model 7, the slope is affected by the interaction btween habitat type and feeding type. 
 
 ```{r}
-lm7 <- lmer(log(Prey_mass) ~ log(Predator_mass) + Type_of_feeding_interaction * Specific_habitat * log(Predator_mass) + (1|Specific_habitat) + (1|Type_of_feeding_interaction), data = filtered_dataset)
+library(lme4)
 
 summary(lm7)
 ranef(lm7)
 tidy(lm7,conf.int = T)
+fitted_lm7 <- augment(lm7) 
+names(fitted_lm7)
+    ggplot(fitted_lm7, aes(x = log.Predator_mass., y = .fixed, colour = Specific_habitat)) +
+    geom_line() #+
+        #facet_grid(~ Specific_habitat)
 ```
 
 
@@ -449,22 +439,73 @@ library(MuMIn)
 ```
 
 ```{r}
-model.sel(lm1, lm2, lm3, lm4, lm6, lm7, rank = AIC)
+model.sel(lm1, lm2, lm4, lm9, lm10, lm11,null, lm12, rank = AIC)
 ```
 
 Take out model 5 -- assumption doens't make sense. 
 
+```{r}
+lm9 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 | Type_of_feeding_interaction) + (1 | Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+
+lm10 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+```
+
+
+
+```{r}
+lm11 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction), data = filtered_dataset)
+
+```
+
+
+
+```{r}
+fitted_lm11 <- augment(lm11) 
+fitted_lm11
+    ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
+    geom_line(aes(colour = Specific_habitat))+facet_grid(~ Type_of_feeding_interaction) + null_line
+    ```
+
+```{r}
+
+fitdata11 <- ranef(lm11)[[1]] %>% 
+    rownames_to_column()%>% as_data_frame() %>% 
+    separate(rowname, into = c("habitat","feeding_type"), sep = ":") 
+colnames(fitdata11)[4] <- c("slope")
+fitdata11 %>% 
+    ggplot()+
+    geom_point(aes(x = feeding_type, y = fixef(lm11)[[2]] + slope,color = habitat) ) + 
+    geom_hline(yintercept = tidy(null)[2,2])
+```
 
 
 
 
+```{r}
+lm12 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction), data = filtered_dataset)
+```
+
+```{r}
+
+fitdata12 <- ranef(lm12)[[1]] %>% 
+    rownames_to_column()%>% as_data_frame() %>% 
+    separate(rowname, into = c("habitat","feeding_type"), sep = ":") 
+colnames(fitdata12)[4] <- c("slope")
+fitdata12 %>% 
+    ggplot()+
+    geom_point(aes(x = feeding_type, y = fixef(lm12)[[2]] + slope,color = habitat) ) + 
+    geom_hline(yintercept = tidy(null)[2,2])
+```
 
 
 
+```{r}
+anova(lm1, lm2, lm4, lm9, lm10, lm11,null, lm12)
+```
 
-
-
-
+```{r}
+anova( lm9, lm10, lm11, lm12)
+```
 
 
 
