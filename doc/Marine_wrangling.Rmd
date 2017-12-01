@@ -1,0 +1,511 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(broom)
+```
+
+```{r}                      
+Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
+problems(Pred)
+```
+
+```{r}
+colnames(Pred) <- gsub(" ", "_", colnames(Pred))
+```
+
+
+```{r}
+Pred 
+
+Pred$Latitude <- Pred$Latitude %>% 
+    sub("º", "d",.)
+
+library(sp)
+Pred$Latitude <- as.numeric(char2dms(Pred$Latitude))
+
+```
+```{r}
+Pred <- Pred %>%
+mutate(Specific_habitat=gsub("Coastal bay", "Coastal Bay", Specific_habitat)) %>%
+mutate(Specific_habitat=gsub("shelf", "Shelf", Specific_habitat))
+```
+
+# pred_abundance dataset 
+
+This dataset is a subset of the marine dataset. What does it include?: 
+```{r}
+# pred_abundance <- Pred %>% 
+#     group_by(Predator) %>% 
+#     tally() %>% 
+#     arrange(desc(n)) %>% 
+#     filter(n > 800)
+# pred_abundance
+# 
+# prey_abundance <- Pred %>% 
+#    group_by(Prey) %>% 
+#     tally() %>% 
+#     arrange(desc(n)) %>% 
+#     filter(n > 50 & n < 3000)
+# prey_abundance
+
+pred_prey_dataset <- Pred %>%
+    # filter(Predator %in% pred_abundance$Predator) %>%
+    # filter(Prey %in% prey_abundance$Prey) %>%
+    # filter(Depth < 1000) %>%
+    group_by(Predator_common_name, 
+             Prey_common_name, 
+             Specific_habitat, 
+             Type_of_feeding_interaction, 
+             Predator_lifestage, 
+             Mean_PP,
+             Mean_annual_temp,
+             Depth) #%>%
+   # summarise(Latitude = mean(Latitude),
+   #           Predator_mass = mean(Predator_mass),
+   #           Prey_mass = mean(Prey_mass),
+   #           Depth = mean(Depth))
+     
+  
+pred_prey_dataset
+
+
+```
+
+# log predator mass vs log prey mass
+
+As prey mass increases so does predator mass. When plotted this way, the data clusters into 4-5 blobs -- it's possible that there might be something underlying this pattern. 
+
+```{r}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass))) +
+    geom_point() +
+    geom_smooth(method = "glm") 
+  
+
+```
+
+# Colour by specific habitat
+
+Same plot, but now we colour data based on what habitat the predator-prey interaction is. 
+It appears that habitat predicts the observed pattern... so what is it about habitat that underlies this pattern that as prey size increases so does predator size?
+```{r, fig.width=7, fig.height=4}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point() 
+
+# based on this graph, prey mass also appears to be smaller than predator mass for most of the time (1:1 line, maybe get a stat on this)
+```
+# Colour by feeding interaction
+
+Same plot, only we colour the data by the kind of feeding pattern the predator exhibits. 
+It looks like this could also explain the data, although maybe not as strongly as habitat -- you see that predacious feeding spans the extremes, and picsivorous feeding does too. But these are really general feeding types... are feeding types found in more habitats than in others? 
+
+```{r, fig.width=7, fig.height=4}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Type_of_feeding_interaction)) +
+    geom_point() 
+```
+
+# Predacious data
+
+```{r, fig.width=7, fig.height=4}
+
+predacious <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == 'predacious') %>% 
+    select(Predator_mass, Prey_mass, Type_of_feeding_interaction, Prey_common_name, Specific_habitat) 
+   
+predacious %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Prey_common_name)) +
+    geom_point()
+
+# looking at the predacious data, there's two extremes:
+# squid prey seem to make predator prey really big
+# on the other hand, copepods and invertebrates appear to make predators really small
+# an energy transfer issue? 
+
+predacious %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point() 
+
+# this might just be a function of the ice zone having a lot of observations, but being in the ice zone or nearshore makes you small, while living in the shelf makes you large
+
+# in general, the slope of this looks almost the same as the previous graphs 
+
+```
+
+# Planktivorous data
+ 
+```{r}
+planktivorous <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == 'planktivorous') %>% 
+    select(Predator_mass, Prey_mass, Type_of_feeding_interaction, Prey_common_name, Specific_habitat)
+
+planktivorous %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Prey_common_name)) +
+    geom_point() 
+
+planktivorous %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point()
+
+# all planktivorous species are found in the ice zone, and they're all really small
+# slope increases quickly 
+
+
+```
+
+# Piscivorous data
+
+```{r, fig.width=7, fig.height=4}
+piscivorous <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == 'piscivorous') %>% 
+    select(Predator_mass, Prey_mass, Type_of_feeding_interaction, Prey_common_name, Specific_habitat) 
+
+piscivorous %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Prey_common_name)) +
+    geom_point()
+
+# You see some grouping here, it's a little more spaced out than what you saw for predacious, but there is definitely some grouping
+
+piscivorous%>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point()
+
+# Specific habitat is also a really good indicator for prey size - predator size
+```
+
+# Facet wrapping
+
+```{r}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Predator_common_name)) +
+    facet_grid(Specific_habitat ~ Type_of_feeding_interaction) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+#ggsave("facetwrapping.jpg", width = 50, height = 40, units = "cm")
+```
+
+# Some latitude stuff
+
+```{r}
+Pred %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = abs(Latitude))) +
+    geom_point(alpha = 0.3)
+```
+
+```{r}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Predator_common_name)) +
+    facet_grid(Specific_habitat ~ Type_of_feeding_interaction) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+# ggsave("facetwrapping_adults.jpg", width = 50, height = 40, units = "cm")
+```
+
+```{r}
+pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == "planktivorous") %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass))) +
+    facet_wrap(~ Specific_habitat) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+# ggsave("facetwrappingplanktivorous.jpg", width = 50, height = 40, units = "cm")
+```
+
+```{r}
+pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == "piscivorous") %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass))) +
+    facet_wrap(~ Specific_habitat) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+# ggsave("facetwrappingpiscivorous.jpg", width = 50, height = 40, units = "cm")
+```
+
+```{r}
+pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == "predacious") %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass))) +
+    facet_wrap(~ Specific_habitat) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+# ggsave("facetwrappingpredacious.jpg", width = 50, height = 40, units = "cm")
+```
+
+
+# Notes from meeting
+
+Before we were thinking Prey and Predator have a really strong correlation but there's nothing really here! (I think it's moer like, depending on where you are, the correlation might be strong but not necessarily strong. But if we have to take some habitats out, it'd be interesting to hypothesize why the slopes of some these things change at different rates -- could it be temperature? could it be depth?). 
+Predator is strongly correlated with their habitat, which has its own depth. 
+WHAT YOU EAT, AND WHERE YOU EAT affects the correlation between predator and prey mass. 
+GLM: look at interactions between specific habitat, type of feeding interactions?? 
+Only when we looked at generalist eaters did habitat
+
+# Predator-prey body mass ratios 
+
+```{r}
+
+# pred_prey_dataset %>%
+#     mutate(PPMR = mean(Predator_mass/Prey_mass)) %>% 
+#     group_by(Specific_habitat, PPMR) %>% 
+#     select() %>% 
+#     ggplot(aes(x = Specific_habitat, y = log(PPMR))) +
+#     geom_col() +
+#     theme(axis.text.x = element_text(angle=-45, hjust=0, vjust=1)) 
+
+# Not really sure if this tells us anything -- I think it gives us the same information as the slope 
+
+# ggsave("predator prey ratio.jpg", width = 15, height = 10, units = "cm")
+```
+
+# OKAY PROJECT 
+
+
+Question: How do specific habitats affect predator-prey body size relationships? (specifically, how does it affect log prey mass (dependent variable))
+- In other words, when log predator mass and log prey mass are plotted, what explains the variation in strength of the slope? 
+- Is there an interaction effect with feeding type? With predator mass?
+
+# Predator-prey relationships 
+
+Same graphs again: 
+```{r}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass), colour = Specific_habitat)) +
+    geom_point(size = 0.3) 
+
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass), colour = Type_of_feeding_interaction)) +
+    geom_point(size = 0.3) 
+
+# Prey mass = dependent variable
+
+# Predator mass = independent variable: Brose et al. 2010 use Predator mass as the independent variable because there is less error in it than prey mass (prey are usually removed from predator guts, sometimes hard to identify exact species)
+
+# are there other independent variables? do they interact?
+
+# Question: how do you add a 1:1 line?
+
+# fit some models to this graph: mixed effects, AIC
+```
+
+```{r}
+pred_prey_dataset %>% 
+    group_by(Type_of_feeding_interaction) %>% 
+    tally()
+
+pred_prey_dataset %>% 
+    group_by(Specific_habitat) %>% 
+    tally()
+
+# I don't think we need to worry about the lifestages of predators becauase in the dataset it distinguishes between what the predator eats depending on its lifestage
+```
+
+```{r}
+filtered_dataset <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction != 'insectivorous' & Type_of_feeding_interaction != 'predacious/piscivorous') %>% 
+    filter(Specific_habitat != 'Coastal, SW & SE Greenland' & Specific_habitat != 'inshore' & Specific_habitat != 'Nearshore waters')
+
+filtered_dataset 
+```
+
+
+
+```{r, fig.height=5, fig.width=15}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass), colour = Geographic_location)) +
+    geom_point(size = 0.1) +
+    facet_wrap(~ Specific_habitat) +
+    geom_smooth(method = 'glm', colour = 'black')
+
+# I think the slope might tell you about the range of body sizes, as well as how prey body mass changes with predator body mass in different habitats
+```
+
+```{r}
+pred_prey_dataset %>%
+    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass), colour = Type_of_feeding_interaction)) +
+    geom_point(size = 0.1) +
+    facet_wrap(~ Type_of_feeding_interaction) +
+    geom_smooth(method = 'glm', colour = 'black')
+```
+
+# Model 
+
+```{r}
+install.packages("lme4")
+library(lme4)
+```
+
+```{r}
+filtered_dataset <- Pred
+```
+
+
+```{r}
+null <- glm(log(Prey_mass) ~ log(Predator_mass),data = filtered_dataset) 
+fitted_null <- augment(null) %>% 
+    rename(.fitted_null = .fitted)
+names(fitted_null)
+null_line <- geom_line(aes(x = log.Predator_mass., y = .fitted_null))
+nulllm11 <- bind_cols(fitted_lm11, fitted_null)
+
+```
+
+# Linear model 1
+
+This model says: That for every habitat, predator and prey mass relationships have a different intercept (different starting point), and the effect is has on the slope of the relationship is also different in every habitat.
+Different slope and intercept for habitat.
+
+```{r}
+lm1 <- lmer(log(Prey_mass) ~ 
+                log(Predator_mass) + 
+                (1 + log(Predator_mass)|Specific_habitat), 
+            data = filtered_dataset)
+
+summary(lm1)
+ranef(lm1)
+tidy(lm1,conf.int = T)
+
+```
+
+# Linear model 2
+
+Assuming different slopes and intercepts for different habitats and feeding types.
+
+```{r}
+lm2 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass)|Specific_habitat) + (1 + log(Predator_mass)|Type_of_feeding_interaction), data = filtered_dataset)
+
+summary(lm2)
+ranef(lm2)
+tidy(lm2,conf.int = T)
+fitted_lm2 <- augment(lm2) 
+ggplot(fitted_lm2, aes(x = log.Predator_mass., y = .fixed, colour = Specific_habitat)) +
+    geom_line() 
+```
+
+
+# Linear model 4
+
+Assume different intercepts and slope for every feeding type. 
+
+```{r}
+lm4 <- lmer(log(Prey_mass) ~ 
+                log(Predator_mass) + 
+                (1 + log(Predator_mass)|Type_of_feeding_interaction), data = filtered_dataset)
+summary(lm4)
+ranef(lm4)
+tidy(lm4,conf.int = T)
+```
+
+
+
+
+
+```{r}
+library(tidyverse)
+```
+
+Possible interaction effect for habitat and feeding type. In model 7, the slope is affected by the interaction btween habitat type and feeding type. 
+
+```{r}
+library(lme4)
+
+summary(lm7)
+ranef(lm7)
+tidy(lm7,conf.int = T)
+fitted_lm7 <- augment(lm7) 
+names(fitted_lm7)
+    ggplot(fitted_lm7, aes(x = log.Predator_mass., y = .fixed, colour = Specific_habitat)) +
+    geom_line() #+
+        #facet_grid(~ Specific_habitat)
+```
+
+
+# AIC
+
+```{r}
+install.packages("MuMIn")
+library(MuMIn)
+```
+
+```{r}
+model.sel(lm1, lm2, lm4, lm9, lm10, lm11,null, lm12, rank = AIC)
+```
+
+Take out model 5 -- assumption doens't make sense. 
+
+```{r}
+lm9 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 | Type_of_feeding_interaction) + (1 | Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+
+lm10 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+```
+
+
+
+```{r}
+lm11 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction), data = filtered_dataset)
+
+```
+
+
+
+```{r}
+fitted_lm11 <- augment(lm11) 
+fitted_lm11
+    ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
+    geom_line(aes(colour = Specific_habitat))+facet_grid(~ Type_of_feeding_interaction) + null_line
+    ```
+
+```{r}
+
+fitdata11 <- ranef(lm11)[[1]] %>% 
+    rownames_to_column()%>% as_data_frame() %>% 
+    separate(rowname, into = c("habitat","feeding_type"), sep = ":") 
+colnames(fitdata11)[4] <- c("slope")
+fitdata11 %>% 
+    ggplot()+
+    geom_point(aes(x = feeding_type, y = fixef(lm11)[[2]] + slope,color = habitat) ) + 
+    geom_hline(yintercept = tidy(null)[2,2])
+```
+
+
+
+
+```{r}
+lm12 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction), data = filtered_dataset)
+```
+
+```{r}
+
+fitdata12 <- ranef(lm12)[[1]] %>% 
+    rownames_to_column()%>% as_data_frame() %>% 
+    separate(rowname, into = c("habitat","feeding_type"), sep = ":") 
+colnames(fitdata12)[4] <- c("slope")
+fitdata12 %>% 
+    ggplot()+
+    geom_point(aes(x = feeding_type, y = fixef(lm12)[[2]] + slope,color = habitat) ) + 
+    geom_hline(yintercept = tidy(null)[2,2])
+```
+
+
+
+```{r}
+anova(lm1, lm2, lm4, lm9, lm10, lm11,null, lm12)
+```
+
+```{r}
+anova( lm9, lm10, lm11, lm12)
+```
+
+
+
