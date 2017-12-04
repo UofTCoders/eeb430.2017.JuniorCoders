@@ -17,6 +17,7 @@ library(dplyr)
 
 # Dataset
 
+Based off the "Pred_farhan.Rmd" file in the /doc. 
 ```{r}
 head(Pred)
 ```
@@ -148,5 +149,28 @@ Pred %>%
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
+# Day 3 - Nov 21
+
+```{r}
+install.packages("lme4")
+install.packages("MuMIn")
+```
+
+```{r}
+library(lme4)
+library(MuMIn)
+```
+
+
+```{r}
+lmer(log(Pred$Prey_mass) ~ log(Pred$Predator_mass) + (Pred$Specific_habitat|Pred$Specific_habitat))
+```
+
+
+# Day 4 - Nov 23
+
+```{r}
+?lmer
+```
 
 
