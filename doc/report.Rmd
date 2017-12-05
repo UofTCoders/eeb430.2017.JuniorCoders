@@ -1,28 +1,95 @@
 ---
 title: "Final Project"
 author: "Farhan Majumder, Leila Krichel, Rui Zhou, Jeffrey Nguyen"
-date: "November 23, 2017"
+date: "December 5, 2017"
 output: html_document
 ---
 
-**Introduction**
-
-Animals come in many different shapes and sizes and they can be seen interacting with each other in many forms.  One type of interaction between organisms is the predator-prey interaction which allows us to generate food webs. Animals with a large size have the ability to eat larger prey compared to predators with smaller size, therefore, they would be at a higher trophic level.  There are many articles that compare the ratio between predator-prey interactions(REFERENCES) and they agree that predator mass does increase with prey mass.  However, are there factors that can affect this relationship?  
-
-From the *Marine predator and prey body sizes* dataset created by Barnes et al (2008), we determined that location and feeding behavior are just two of the aforementioned factors that could influence this interaction. The dataset contains information about 27 marine locations with 93 types of predators and 
 
 
-**Results**
-**discussion**
-**Introduction**
 
-**References**
+# Introduction
+
+Animals come in many different shapes and sizes and they can be seen interacting with each other in many forms.  One type of interaction between organisms is the predator-prey interaction which allows us to generate food webs.  Cohen et al(1993) was able to determine that most predators that we see are bigger than the prey that they eat and there is a positive correlation for size increase in predators when prey size increases.  Animals that eat at a higer trophic levels don't neccessary have larger predator-prey ratios as discovered by Tucker and Rogers(2014) for marine and terrestrial mammals. There have been many other experiments that compare the mass of predators to the mass of prey and they overall agree that there is a relationship between predator-prey mass. However, are there other factors that can affect this relationship?
+
+From the *Marine predator and prey body sizes* dataset created by Barnes et al (2008), we want to show that location and feeding behavior are just two of the aforementioned factors that could influence this interaction. The dataset contains a vast amount of information that comes from 27 marine locations with 93 types of predators and prey.  
+
+```{r,warning=FALSE, include=FALSE}
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(broom)
+library(ggplot2)
+```
+
+```{r,warning=FALSE, include=FALSE}
+
+Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
+colnames(Pred) <- gsub(" ", "_", colnames(Pred))
+
+Pred <- Pred %>%
+mutate(Specific_habitat=gsub("Coastal bay", "Coastal Bay", Specific_habitat)) %>%
+mutate(Specific_habitat=gsub("shelf", "Shelf", Specific_habitat))
+
+pred_prey_dataset <- Pred %>%
+    # filter(Predator %in% pred_abundance$Predator) %>%
+    # filter(Prey %in% prey_abundance$Prey) %>%
+    # filter(Depth < 1000) %>%
+    group_by(Predator_common_name, 
+             Prey_common_name, 
+             Specific_habitat, 
+             Type_of_feeding_interaction, 
+             Predator_lifestage, 
+             Mean_PP,
+             Mean_annual_temp,
+             Depth) #%>%
+   # summarise(Latitude = mean(Latitude),
+   #           Predator_mass = mean(Predator_mass),
+   #           Prey_mass = mean(Prey_mass),
+   #           Depth = mean(Depth))
+     
+  
+pred_prey_dataset
+
+```
+
+
+```{r, echo=FALSE}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass))) +
+    geom_point() +
+    geom_smooth(method = "glm") 
+```  
+
+
+
+# Methods
+
+
+# Results
+
+## Graphs
+
+## Models
+
+
+
+# Discussion
+
+
+
+
+
+
+
+
+# References
 
 1) Cohen, J. E., Pimm, S. L., Yodzis, P., & Saldana, J. (1993). *Body sizes of animal predators and animal prey in food webs*. Journal of Animal Ecology, 62, 67-78. doi:10.2307/5483
 
 2) C. Barnes, D. M. Bethea, R. D. Brodeur, J. Spitz, V. Ridoux, C. Pusineri, B. C. Chase, M. E. Hunsicker, F. Juanes, A. Kellermann, J. Lancaster, F. M?nard, F.-X. Bard, P. Munk, J. K. Pinnegar, F. S. Scharf, R. A. Rountree, K. I. Stergiou, C. Sassa, A. Sabates, and S. Jennings. 2008. *Predator and prey body sizes in marine food webs*. Ecology 89:881.http://www.esapubs.org/archive/ecol/E089/051/metadata.htm
 
-3) Brose, U., Williams, R. J., & Martinez, N. D. (13 october 2006). *Allometric scaling enhances stability in complex food webs*. Ecology Letters, 9(11), 1228-1236. doi:10.1111/j.1461-0248.2006.00978.x
+4)Tucker MA, Rogers TL. 2014, *Examining predator–prey body size, trophic level and body mass across marine and terrestrial mammals*. Proc. R. Soc. B 281:20142103., http://dx.doi.org/10.1098/rspb.2014.2103
 
 
 
