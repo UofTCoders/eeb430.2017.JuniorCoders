@@ -6,13 +6,8 @@ output:
   html_document: 
    toc: true
    toc_depth: 4
-   
-   
-
+    
 ---
-
-
-
 
 # Introduction
 
@@ -28,6 +23,7 @@ library(broom)
 library(ggplot2)
 library(lme4)
 library(MuMIn)
+library(knitr)
 
 ```
 
@@ -176,6 +172,12 @@ nulllm11 <- bind_cols(fitted_lm11, fitted_null)
 model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
 ```
 
+```{r,warning=FALSE, echo=FALSE}
+mode <- model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
+
+kable(mode)
+```
+
 
 ### Graphs 
 
@@ -212,7 +214,7 @@ fitdata11 %>%
 
 2) C. Barnes, D. M. Bethea, R. D. Brodeur, J. Spitz, V. Ridoux, C. Pusineri, B. C. Chase, M. E. Hunsicker, F. Juanes, A. Kellermann, J. Lancaster, F. M?nard, F.-X. Bard, P. Munk, J. K. Pinnegar, F. S. Scharf, R. A. Rountree, K. I. Stergiou, C. Sassa, A. Sabates, and S. Jennings. 2008. *Predator and prey body sizes in marine food webs*. Ecology 89:881.http://www.esapubs.org/archive/ecol/E089/051/metadata.htm
 
-4)Tucker MA, Rogers TL. 2014, *Examining predator–prey body size, trophic level and body mass across marine and terrestrial mammals*. Proc. R. Soc. B 281:20142103., http://dx.doi.org/10.1098/rspb.2014.2103
+3) Tucker MA, Rogers TL. 2014, *Examining predator–prey body size, trophic level and body mass across marine and terrestrial mammals*. Proc. R. Soc. B 281:20142103., http://dx.doi.org/10.1098/rspb.2014.2103
 
 
 
