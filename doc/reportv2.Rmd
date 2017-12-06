@@ -1,0 +1,194 @@
+---
+title: "Final Project"
+author: "Farhan Majumder, Leila Krichel, Rui Zhou, Jeffrey Nguyen"
+date: "December 5, 2017"
+output:
+  html_document: 
+   toc: true
+   toc_depth: 4
+    
+---
+
+# Introduction
+
+Animals come in many different shapes and sizes and they can be seen interacting with each other in many forms.  One type of interaction between organisms is the predator-prey interaction which allows us to generate food webs.  Cohen et al(1993) was able to determine that most predators that we see are bigger than the prey that they eat and there is a positive correlation for size increase in predators when prey size increases.  Animals that eat at a higer trophic levels don't neccessary have larger predator-prey ratios as discovered by Tucker and Rogers(2014) for marine and terrestrial mammals. There have been many other experiments that compare the mass of predators to the mass of prey and they overall agree that there is a relationship between predator-prey mass. However, are there other factors that can affect this relationship?
+
+From the *Marine predator and prey body sizes* dataset created by Barnes et al (2008), we want to show that location and feeding behavior are just two of the aforementioned factors that could influence this interaction. The dataset contains a vast amount of information that comes from 27 marine locations with 93 types of predators and prey.  
+
+```{r,warning=FALSE, include=FALSE}
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(broom)
+library(ggplot2)
+library(lme4)
+library(MuMIn)
+library(knitr)
+
+Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
+colnames(Pred) <- gsub(" ", "_", colnames(Pred))
+
+Pred <- Pred %>%
+mutate(Specific_habitat=gsub("Coastal bay", "Coastal Bay", Specific_habitat)) %>%
+mutate(Specific_habitat=gsub("shelf", "Shelf", Specific_habitat))
+
+pred_prey_dataset <- Pred %>%
+    group_by(Predator_common_name, 
+             Prey_common_name, 
+             Specific_habitat, 
+             Type_of_feeding_interaction, 
+             Predator_lifestage, 
+             Mean_PP,
+             Mean_annual_temp,
+             Depth) #%>%
+
+
+
+
+filtered_dataset <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction != 'insectivorous' & Type_of_feeding_interaction != 'predacious/piscivorous') %>% 
+    filter(Specific_habitat != 'Coastal, SW & SE Greenland' & Specific_habitat != 'inshore' & Specific_habitat != 'Nearshore waters')
+
+filtered_dataset 
+
+lm9 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 | Type_of_feeding_interaction) + (1 | Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+
+lm10 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+
+lm11 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction), data = filtered_dataset)
+
+lm12 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction), data = filtered_dataset)
+
+
+fitted_lm11 <- augment(lm11) 
+
+null <- glm(log(Prey_mass) ~ log(Predator_mass),data = filtered_dataset) 
+fitted_null <- augment(null) %>% 
+    rename(.fitted_null = .fitted)
+names(fitted_null)
+null_line <- geom_line(aes(x = log.Predator_mass., y = .fitted_null))
+nulllm11 <- bind_cols(fitted_lm11, fitted_null)
+
+model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
+
+```
+
+
+
+
+```{r, echo=FALSE,fig.cap=paste("Fig.1: Shows the log of Predator mass vs log of Prey Mass")}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass))) +
+    geom_point() +
+    geom_smooth(method = "glm") 
+```  
+
+
+```{r, fig.width=7, fig.height=4, echo=FALSE,fig.cap=paste("Fig.2: Shows the log of Predator mass vs log of Prey Mass by Specific Habitat")}
+
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass), colour = Specific_habitat)) +
+    geom_point() 
+
+
+```
+
+```{r, fig.width=7, fig.height=4, echo=FALSE,fig.cap=paste("Fig.3: Shows the log of Predator mass vs log of Prey Mass by Feeding Behavior")}
+
+
+
+# WE MAY USE THIS GRAPH
+
+
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass), colour = Type_of_feeding_interaction)) +
+    geom_point() 
+```
+
+
+
+```{r, fig.width=7, fig.height=10, echo=FALSE}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = "gray50")) +
+    facet_wrap(~ Type_of_feeding_interaction+Specific_habitat ) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+
+#ggsave("facetwrapping.jpg", width = 50, height = 40, units = "cm")
+```
+
+# Methods
+
+Data was obtained from the “Marine predator and prey body sizes”, created by Barnes et al(2008).; joint venture generated by 17 different international institutions. As such, we have data from global locations on organisms and their environment. We focused on data on environmental variables to see which ones suggest a correlation with predator mass and prey mass. Our variables of interest were selected to be: specific habitat location and feeding behaviour.
+ 
+Importing the dataset into R, we used the package ggplot2 to visualize the patterns and trend in the aforementioned variables. Three graphs were generated from the data. The first figure compares predator mass and prey mass. The second figure is a map graph representing the locations of all the 27 international marine locations where our data was obtained. Using the facet feature of ggplot2, the third figure visualized the affect of feeding behaviour and the specific location on the relationship of predator-prey mass ratios.
+ 
+To determine which variables are affecting the slope of predator-prey mass relations, we generated several models. (using glm; and lmr; and mn <- talk about these later). Every model assumes that the predator mass are the independent variable, and the prey mass are the dependent variable. The first model was a control model; assuming that there was nothing affecting the interaction of predator-prey mass. The second model incorporates the effect of specific habitat on the intercept and slope of the predator-prey mass ratio. Fourth model incorporates the effect of feeding behaviour on the intercept and slope of the predator-prey mass ratio.  The third model incorporates the additive effect of both specific habitat and feeding behaviour. The sixth model incorporates the mixed effect of habitat on feeding behaviour in the predator-prey mass interaction. The seventh model incorporates the mixed effect of feeding behaviour in the mass interaction. The last model incorporates for “everything” (<- need more details). 
+
+
+# Results
+
+The first graph shows a positive correlation between the log of predator mass and the log of prey mass; visualized via a linear regression line. As the dataset indicated, prey mass was determined off predator mass; ergo prey mass is the dependent variable.
+ 
+Second graph is a map-graph representing the locations of the sample locations (MORE TO COME)
+ 
+Third graph is the one that details how feeding behaviour and specific habitat affect the interaction of predator-prey mass. We can generalize the feeding behaviours of the predators into two categories: specialist feeders (the predators categorized as piscivorous, insectivorous, and herbivorous) and generalist feeders (categorized only has predacious). All the graphs under the specialist feeders showed a mild to strong positive correlation between predator and prey mass.
+*In the piscivorous column, of the ten total plots, 8 of them show a positive correlation, 2 of them show neutral correlation
+*In the planktivourous column, of the six plots that have a linear regression, 5 of them are positive in correlation, the last one shows a neutral correlation.
+On the other hand, within the graphs under generalist feeders, there were a variety of trends; some showed positive correlations, but also some interactions were neutral and even negative in correlation.
+*There are 12 plots in the column under predacious. 6 of the plots show an indication of positive trend, 5 show a neutral correlation, and one show a negative correlation. 
+
+
+
+### Models
+
+
+```{r,warning=FALSE, echo=FALSE}
+
+kable(model.sel(lm9, lm10, lm11,null, lm12, rank = AIC))
+```
+Table.1: Results of our models
+
+
+### Graphs 
+
+```{r,warning=FALSE, echo=FALSE}
+    ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
+    geom_line(aes(colour = Specific_habitat))+facet_grid(~ Type_of_feeding_interaction) + null_line
+```
+
+
+```{r,warning=FALSE, echo=FALSE}
+
+fitdata11 <- ranef(lm11)[[1]] %>% 
+    rownames_to_column()%>% as_data_frame() %>% 
+    separate(rowname, into = c("habitat","feeding_type"), sep = ":") 
+colnames(fitdata11)[4] <- c("slope")
+fitdata11 %>% 
+    ggplot()+
+    geom_point(aes(x = feeding_type, y = fixef(lm11)[[2]] + slope,color = habitat) ) + 
+    geom_hline(yintercept = tidy(null)[2,2])
+
+```
+
+# Discussion
+
+
+
+
+
+
+
+
+# References
+
+1) Cohen, J. E., Pimm, S. L., Yodzis, P., & Saldana, J. (1993). *Body sizes of animal predators and animal prey in food webs*. Journal of Animal Ecology, 62, 67-78. doi:10.2307/5483
+
+2) C. Barnes, D. M. Bethea, R. D. Brodeur, J. Spitz, V. Ridoux, C. Pusineri, B. C. Chase, M. E. Hunsicker, F. Juanes, A. Kellermann, J. Lancaster, F. M?nard, F.-X. Bard, P. Munk, J. K. Pinnegar, F. S. Scharf, R. A. Rountree, K. I. Stergiou, C. Sassa, A. Sabates, and S. Jennings. 2008. *Predator and prey body sizes in marine food webs*. Ecology 89:881.http://www.esapubs.org/archive/ecol/E089/051/metadata.htm
+
+3) Tucker MA, Rogers TL. 2014, *Examining predator–prey body size, trophic level and body mass across marine and terrestrial mammals*. Proc. R. Soc. B 281:20142103., http://dx.doi.org/10.1098/rspb.2014.2103
+
+
+
+
+
