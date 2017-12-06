@@ -25,9 +25,11 @@ library(lme4)
 library(MuMIn)
 library(knitr)
 
+
 ```
 
 ```{r,warning=FALSE, include=FALSE}
+
 
 Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
 colnames(Pred) <- gsub(" ", "_", colnames(Pred))
@@ -46,6 +48,34 @@ pred_prey_dataset <- Pred %>%
              Mean_annual_temp,
              Depth) #%>%
 
+
+
+
+filtered_dataset <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction != 'insectivorous' & Type_of_feeding_interaction != 'predacious/piscivorous') %>% 
+    filter(Specific_habitat != 'Coastal, SW & SE Greenland' & Specific_habitat != 'inshore' & Specific_habitat != 'Nearshore waters')
+
+filtered_dataset 
+
+lm9 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 | Type_of_feeding_interaction) + (1 | Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+
+lm10 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+
+lm11 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction), data = filtered_dataset)
+
+lm12 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction), data = filtered_dataset)
+
+
+fitted_lm11 <- augment(lm11) 
+
+null <- glm(log(Prey_mass) ~ log(Predator_mass),data = filtered_dataset) 
+fitted_null <- augment(null) %>% 
+    rename(.fitted_null = .fitted)
+names(fitted_null)
+null_line <- geom_line(aes(x = log.Predator_mass., y = .fitted_null))
+nulllm11 <- bind_cols(fitted_lm11, fitted_null)
+
+model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
 
 ```
 
@@ -67,14 +97,11 @@ pred_prey_dataset %>%
 
 ```
 
-```{r, fig.width=7, fig.height=4, echo=FALSE}
+```{r, fig.width=7, fig.height=4, echo=FALSE,fig.cap=paste("Fig.3: Shows the log of Predator mass vs log of Prey Mass by Feeding Behavior")}
 
 
 
 # WE MAY USE THIS GRAPH
-
-
-
 
 
 pred_prey_dataset %>% 
@@ -118,87 +145,18 @@ On the other hand, within the graphs under generalist feeders, there were a vari
 
 
 ### Models
-```{r,warning=FALSE, include=FALSE}
-filtered_dataset <- pred_prey_dataset %>% 
-    filter(Type_of_feeding_interaction != 'insectivorous' & Type_of_feeding_interaction != 'predacious/piscivorous') %>% 
-    filter(Specific_habitat != 'Coastal, SW & SE Greenland' & Specific_habitat != 'inshore' & Specific_habitat != 'Nearshore waters')
 
-filtered_dataset 
-```
-
-```{r,warning=FALSE, include=FALSE}
-lm9 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 | Type_of_feeding_interaction) + (1 | Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
-
-lm10 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
-```
-
-
-
-```{r,warning=FALSE, include=FALSE}
-lm11 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction), data = filtered_dataset)
-
-```
-
-
-```{r,warning=FALSE, include=FALSE}
-lm12 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction), data = filtered_dataset)
-```
-
-```{r,warning=FALSE, include=FALSE}
-fitted_lm11 <- augment(lm11) 
-
-
-```
-
-```{r,warning=FALSE, include=FALSE}
-
-null <- glm(log(Prey_mass) ~ log(Predator_mass),data = filtered_dataset) 
-fitted_null <- augment(null) %>% 
-    rename(.fitted_null = .fitted)
-names(fitted_null)
-null_line <- geom_line(aes(x = log.Predator_mass., y = .fitted_null))
-nulllm11 <- bind_cols(fitted_lm11, fitted_null)
-
-```
-
-
-
-|    Model selection table |       heading      |                |   |   |
-|--------------------------|--------------------|----------------|---|---|
-|                          | (Int) log(Prd_mss) | class          |   |   |
-|    lm12 -5.869           | 0.8529 lmerMod     |                |   |   |
-|    lm11 -5.376           | 0.8362 lmerMod     |                |   |   |
-|    lm10 -5.911           | 0.7056 lmerMod     |                |   |   |
-|    lm9                   | -6.501             | 0.7208 lmerMod |   |   |
-|    null -7.028           | 1.0050             | glm            |   |   |
-
-
-
-
-
-
-|                           | AIC      | delta weight |       |   |
-|---------------------------|----------|--------------|-------|---|
-|    lm12 144134.2          | 0.00     | 0.690        |       |   |
-|    lm11 144135.8          | 1.61     | 0.308        |       |   |
-|    lm10 144145.9          | 11.74    | 0.002        |       |   |
-|    lm9                    | 145855.8 | 1721.67      | 0.000 |   |
-|    null 176183.6 32049.46 | 0.000    |              |       |   |
 
 ```{r,warning=FALSE, echo=FALSE}
-model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
-```
 
-```{r,warning=FALSE, echo=FALSE}
-mode <- model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
-
-kable(mode)
+kable(model.sel(lm9, lm10, lm11,null, lm12, rank = AIC))
 ```
+Table.1: Results of our models
 
 
 ### Graphs 
 
-```{r,warning=FALSE, echo=FALSE, fig.cap=paste("RWARAWR")}
+```{r,warning=FALSE, echo=FALSE}
     ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
     geom_line(aes(colour = Specific_habitat))+facet_grid(~ Type_of_feeding_interaction) + null_line
 ```
