@@ -2,7 +2,13 @@
 title: "Final Project"
 author: "Farhan Majumder, Leila Krichel, Rui Zhou, Jeffrey Nguyen"
 date: "December 5, 2017"
-output: html_document
+output:
+  html_document: 
+   toc: true
+   toc_depth: 4
+   
+   
+
 ---
 
 
@@ -90,6 +96,7 @@ pred_prey_dataset %>%
 
 #ggsave("facetwrapping.jpg", width = 50, height = 40, units = "cm")
 ```
+
 # Methods
 
 
@@ -143,16 +150,27 @@ nulllm11 <- bind_cols(fitted_lm11, fitted_null)
 
 
 
-| ## Model selection table |       heading             |                |   |   |
+|    Model selection table |       heading      |                |   |   |
 |--------------------------|--------------------|----------------|---|---|
-|                        | (Int) log(Prd_mss) | class          |   |   |
-| lm12 -5.869           | 0.8529 lmerMod     |                |   |   |
-| lm11 -5.376           | 0.8362 lmerMod     |                |   |   |
-|  lm10 -5.911           | 0.7056 lmerMod     |                |   |   |
-| ## lm9                   | -6.501             | 0.7208 lmerMod |   |   |
-| ## null -7.028           | 1.0050             | glm            |   |   |
+|                          | (Int) log(Prd_mss) | class          |   |   |
+|    lm12 -5.869           | 0.8529 lmerMod     |                |   |   |
+|    lm11 -5.376           | 0.8362 lmerMod     |                |   |   |
+|    lm10 -5.911           | 0.7056 lmerMod     |                |   |   |
+|    lm9                   | -6.501             | 0.7208 lmerMod |   |   |
+|    null -7.028           | 1.0050             | glm            |   |   |
 
 
+
+
+
+
+|                           | AIC      | delta weight |       |   |
+|---------------------------|----------|--------------|-------|---|
+|    lm12 144134.2          | 0.00     | 0.690        |       |   |
+|    lm11 144135.8          | 1.61     | 0.308        |       |   |
+|    lm10 144145.9          | 11.74    | 0.002        |       |   |
+|    lm9                    | 145855.8 | 1721.67      | 0.000 |   |
+|    null 176183.6 32049.46 | 0.000    |              |       |   |
 
 ```{r,warning=FALSE, echo=FALSE}
 model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
