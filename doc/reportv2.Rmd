@@ -9,11 +9,6 @@ output:
     
 ---
 
-# Introduction
-
-Animals come in many different shapes and sizes and they can be seen interacting with each other in many forms.  One type of interaction between organisms is the predator-prey interaction which allows us to generate food webs.  Cohen et al(1993) was able to determine that most predators that we see are bigger than the prey that they eat and there is a positive correlation for size increase in predators when prey size increases.  Animals that eat at a higer trophic levels don't neccessary have larger predator-prey ratios as discovered by Tucker and Rogers(2014) for marine and terrestrial mammals. There have been many other experiments that compare the mass of predators to the mass of prey and they overall agree that there is a relationship between predator-prey mass. However, are there other factors that can affect this relationship?
-
-From the *Marine predator and prey body sizes* dataset created by Barnes et al (2008), we want to show that location and feeding behavior are just two of the aforementioned factors that could influence this interaction. The dataset contains a vast amount of information that comes from 27 marine locations with 93 types of predators and prey.  
 
 ```{r,warning=FALSE, include=FALSE}
 library(tidyverse)
@@ -24,13 +19,10 @@ library(ggplot2)
 library(lme4)
 library(MuMIn)
 library(knitr)
-
-
 ```
 
+
 ```{r,warning=FALSE, include=FALSE}
-
-
 Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
 colnames(Pred) <- gsub(" ", "_", colnames(Pred))
 
@@ -48,36 +40,13 @@ pred_prey_dataset <- Pred %>%
              Mean_annual_temp,
              Depth) #%>%
 
-
-
-
-filtered_dataset <- pred_prey_dataset %>% 
-    filter(Type_of_feeding_interaction != 'insectivorous' & Type_of_feeding_interaction != 'predacious/piscivorous') %>% 
-    filter(Specific_habitat != 'Coastal, SW & SE Greenland' & Specific_habitat != 'inshore' & Specific_habitat != 'Nearshore waters')
-
-filtered_dataset 
-
-lm9 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 | Type_of_feeding_interaction) + (1 | Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
-
-lm10 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
-
-lm11 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction), data = filtered_dataset)
-
-lm12 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction), data = filtered_dataset)
-
-
-fitted_lm11 <- augment(lm11) 
-
-null <- glm(log(Prey_mass) ~ log(Predator_mass),data = filtered_dataset) 
-fitted_null <- augment(null) %>% 
-    rename(.fitted_null = .fitted)
-names(fitted_null)
-null_line <- geom_line(aes(x = log.Predator_mass., y = .fitted_null))
-nulllm11 <- bind_cols(fitted_lm11, fitted_null)
-
-model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
-
 ```
+
+# Introduction
+
+Animals come in many different shapes and sizes and they can be seen interacting with each other in many forms.  One type of interaction between organisms is the predator-prey interaction which allows us to generate food webs.  Cohen et al(1993) was able to determine that most predators that we see are bigger than the prey that they eat and there is a positive correlation for size increase in predators when prey size increases.  Animals that eat at a higer trophic levels don't neccessary have larger predator-prey ratios as discovered by Tucker and Rogers(2014) for marine and terrestrial mammals. There have been many other experiments that compare the mass of predators to the mass of prey and they overall agree that there is a relationship between predator-prey mass. However, are there other factors that can affect this relationship?
+
+From the *Marine predator and prey body sizes* dataset created by Barnes et al (2008), we want to show that location and feeding behavior are just two of the aforementioned factors that could influence this interaction. The dataset contains a vast amount of information that comes from 27 marine locations with 93 types of predators and prey.  
 
 
 ```{r, echo=FALSE,fig.cap=paste("Fig.1: Shows the log of Predator mass vs log of Prey Mass")}
@@ -147,10 +116,44 @@ On the other hand, within the graphs under generalist feeders, there were a vari
 ### Models
 
 
+```{r,warning=FALSE, include=FALSE}
+filtered_dataset <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction != 'insectivorous' & Type_of_feeding_interaction != 'predacious/piscivorous') %>% 
+    filter(Specific_habitat != 'Coastal, SW & SE Greenland' & Specific_habitat != 'inshore' & Specific_habitat != 'Nearshore waters')
+
+filtered_dataset 
+
+
+
+lm9 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 | Type_of_feeding_interaction) + (1 | Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+
+lm10 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+
+lm11 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction), data = filtered_dataset)
+
+lm12 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 + log(Predator_mass) | Specific_habitat) + (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction) + (1 + log(Predator_mass)| Type_of_feeding_interaction), data = filtered_dataset)
+
+
+fitted_lm11 <- augment(lm11) 
+
+null <- glm(log(Prey_mass) ~ log(Predator_mass),data = filtered_dataset) 
+fitted_null <- augment(null) %>% 
+    rename(.fitted_null = .fitted)
+names(fitted_null)
+null_line <- geom_line(aes(x = log.Predator_mass., y = .fitted_null))
+nulllm11 <- bind_cols(fitted_lm11, fitted_null)
+
+
+model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
+```
+
+
+
 ```{r,warning=FALSE, echo=FALSE}
 
 kable(model.sel(lm9, lm10, lm11,null, lm12, rank = AIC))
 ```
+
 Table.1: Results of our models
 
 
@@ -181,7 +184,16 @@ fitdata11 %>%
 
 
 
+# Software
+The software we used to create this document is the statistical Analysis program R.  The packages used to create this data are:
 
+1)  tidyverse
+2)  dplyer
+3)  readxl
+4)  broom
+5)  lme4
+6)  MuMIn
+7)  knitr
 
 
 # References
