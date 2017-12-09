@@ -3,11 +3,36 @@ title: "Final Project"
 author: "Farhan Majumder, Leila Krichel, Rui Zhou, Jeffrey Nguyen"
 date: "December 5, 2017"
 output:
-  html_document: 
-   toc: true
-   toc_depth: 4
-    
+  html_document:
+    toc: yes
+    toc_depth: 4
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
 ---
+
+```{r,warning=FALSE, include=FALSE}
+
+
+####   THE TEAM THEME 
+
+
+
+
+jrc_theme <- function() {
+    theme(
+        plot.title = element_text(hjust = 0.5),
+        panel.border = element_rect(fill = NA),
+        axis.line = element_line(),
+        #text = element_text(size = 11, family = "Times"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(colour = "grey91"),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom")
+}
+
+
+```
 
 
 ```{r,warning=FALSE, include=FALSE}
@@ -19,6 +44,7 @@ library(ggplot2)
 library(lme4)
 library(MuMIn)
 library(knitr)
+library(plotly)
 ```
 
 
@@ -40,6 +66,7 @@ pred_prey_dataset <- Pred %>%
              Mean_annual_temp,
              Depth) #%>%
 
+
 ```
 
 # Introduction
@@ -49,46 +76,45 @@ Animals come in many different shapes and sizes and they can be seen interacting
 From the *Marine predator and prey body sizes* dataset created by Barnes et al (2008), we want to show that location and feeding behavior are just two of the aforementioned factors that could influence this interaction. The dataset contains a vast amount of information that comes from 27 marine locations with 93 types of predators and prey.  
 
 
-```{r, echo=FALSE,fig.cap=paste("Fig.1: Shows the log of Predator mass vs log of Prey Mass")}
-pred_prey_dataset %>% 
-    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass))) +
-    geom_point() +
-    geom_smooth(method = "glm") 
-```  
 
 
-```{r, fig.width=7, fig.height=4, echo=FALSE,fig.cap=paste("Fig.2: Shows the log of Predator mass vs log of Prey Mass by Specific Habitat")}
+```{r,echo=FALSE,fig.width=7, fig.height=6,warning=FALSE,fig.cap=paste("Fig.1: *Shows the log of Predator mass vs log of Prey Mass")}
+
+ pred_prey_dataset %>% 
+     ggplot(aes(x = log(Predator_mass), y = log(Prey_mass))) +
+     geom_hex(bins = 50) +
+     geom_smooth(method = "glm", colour = "Red") +
+    jrc_theme()
+
+
+```
+
+
+
+```{r, fig.width=8, fig.height=5, echo=FALSE,fig.cap=paste("Fig.2: *Shows the log of Predator mass vs log of Prey Mass by Specific Habitat*")}
 
 pred_prey_dataset %>% 
     ggplot(aes(x = log(Predator_mass), y = log(Prey_mass), colour = Specific_habitat)) +
-    geom_point() 
+   geom_point()
 
 
 ```
 
-```{r, fig.width=7, fig.height=4, echo=FALSE,fig.cap=paste("Fig.3: Shows the log of Predator mass vs log of Prey Mass by Feeding Behavior")}
 
 
 
-# WE MAY USE THIS GRAPH
-
-
-pred_prey_dataset %>% 
-    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass), colour = Type_of_feeding_interaction)) +
-    geom_point() 
+```{r, fig.width=8, fig.height=6, echo=FALSE,fig.cap=paste("Fig.4")}
+# Fig. 2b
+Pred %>%
+    ggplot(aes(x = log(Predator_mass),
+               y = log(Prey_mass),
+               colour = Type_of_feeding_interaction)) +
+    geom_point(size = 0.01) +
+    facet_wrap(~ Specific_habitat) +
+    geom_smooth(method = 'glm', colour = 'black', size = 0.5) 
+    
 ```
 
-
-
-```{r, fig.width=7, fig.height=10, echo=FALSE}
-pred_prey_dataset %>% 
-    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = "gray50")) +
-    facet_wrap(~ Type_of_feeding_interaction+Specific_habitat ) +
-    geom_point() +
-    geom_smooth(method = 'glm', colour = 'black')
-
-#ggsave("facetwrapping.jpg", width = 50, height = 40, units = "cm")
-```
 
 # Methods
 
@@ -117,12 +143,10 @@ On the other hand, within the graphs under generalist feeders, there were a vari
 
 
 ```{r,warning=FALSE, include=FALSE}
+
 filtered_dataset <- pred_prey_dataset %>% 
     filter(Type_of_feeding_interaction != 'insectivorous' & Type_of_feeding_interaction != 'predacious/piscivorous') %>% 
     filter(Specific_habitat != 'Coastal, SW & SE Greenland' & Specific_habitat != 'inshore' & Specific_habitat != 'Nearshore waters')
-
-filtered_dataset 
-
 
 
 lm9 <- lmer(log(Prey_mass) ~ log(Predator_mass) + (1 | Type_of_feeding_interaction) + (1 | Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
@@ -154,15 +178,18 @@ model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
 kable(model.sel(lm9, lm10, lm11,null, lm12, rank = AIC))
 ```
 
-Table.1: Results of our models
+*Table.1: Results of our models*
 
 
 ### Graphs 
 
-```{r,warning=FALSE, echo=FALSE}
+```{r, fig.width=11, fig.height=5, warning=FALSE, echo=FALSE}
     ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
-    geom_line(aes(colour = Specific_habitat))+facet_grid(~ Type_of_feeding_interaction) + null_line
+    geom_line(aes(colour = Specific_habitat))+facet_grid(~ Type_of_feeding_interaction) + null_line +
+    jrc_theme()
+   
 ```
+
 
 
 ```{r,warning=FALSE, echo=FALSE}
@@ -170,13 +197,22 @@ Table.1: Results of our models
 fitdata11 <- ranef(lm11)[[1]] %>% 
     rownames_to_column()%>% as_data_frame() %>% 
     separate(rowname, into = c("habitat","feeding_type"), sep = ":") 
+
 colnames(fitdata11)[4] <- c("slope")
-fitdata11 %>% 
-    ggplot()+
-    geom_point(aes(x = feeding_type, y = fixef(lm11)[[2]] + slope,color = habitat) ) + 
+
+colourplz <- fitdata11 %>% 
+    ggplot(aes(x = feeding_type, y = fixef(lm11)[[2]] + slope,color = habitat))+
+    geom_point() + 
     geom_hline(yintercept = tidy(null)[2,2])
 
+ggplotly(colourplz)
+
 ```
+
+
+
+
+
 
 # Discussion
 
@@ -194,6 +230,7 @@ The software we used to create this document is the statistical Analysis program
 5)  lme4
 6)  MuMIn
 7)  knitr
+8)  plotly
 
 
 # References
