@@ -44,7 +44,34 @@ pred_prey_dataset <- Pred %>%
 
 # Introduction
 
-Animals come in many different shapes and sizes and they can be seen interacting with each other in many forms.  One type of interaction between organisms is the predator-prey interaction which allows us to generate food webs.  Cohen et al(1993) was able to determine that most predators that we see are bigger than the prey that they eat and there is a positive correlation for size increase in predators when prey size increases.  Animals that eat at a higer trophic levels don't neccessary have larger predator-prey ratios as discovered by Tucker and Rogers(2014) for marine and terrestrial mammals. There have been many other experiments that compare the mass of predators to the mass of prey and they overall agree that there is a relationship between predator-prey mass. However, are there other factors that can affect this relationship?
+Body size is an important determinant of an ecosystem's structure and function because it influences ecological interactions, population abundances and distributions, and ultimately, a community's diversity (Yvon-Durocher *et al.* 2011). These interactions are mediated by the exchange of energy between trophic levels 
+
+
+
+
+In general
+Yet, it is still relatively unknown factors govern body size. 
+
+- consumer size relationship to resources size = food web size structure 
+- body size >> governs trophic exchanges of energy = function of size
+
+- size structure 
+
+
+
+
+
+
+
+One type of interaction between organisms is the predator-prey interaction which allows us to generate food webs.  
+
+Cohen et al(1993) was able to determine that most predators that we see are bigger than the prey that they eat and there is a positive correlation for size increase in predators when prey size increases.  
+
+Animals that eat at a higer trophic levels don't neccessary have larger predator-prey ratios as discovered by Tucker and Rogers(2014) for marine and terrestrial mammals. 
+
+There have been many other experiments that compare the mass of predators to the mass of prey and they overall agree that there is a relationship between predator-prey mass. 
+
+However, are there other factors that can affect this relationship?
 
 From the *Marine predator and prey body sizes* dataset created by Barnes et al (2008), we want to show that location and feeding behavior are just two of the aforementioned factors that could influence this interaction. The dataset contains a vast amount of information that comes from 27 marine locations with 93 types of predators and prey.  
 
