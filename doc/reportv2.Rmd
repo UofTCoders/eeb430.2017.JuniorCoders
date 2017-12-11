@@ -73,38 +73,13 @@ pred_prey_dataset <- Pred %>%
 
 # Introduction
 
-Body size is an important determinant of an ecosystem's structure and function because it influences ecological interactions, population abundances and distributions, and ultimately, a community's diversity (Yvon-Durocher *et al.* 2011). These interactions are mediated by the exchange of energy between trophic levels.
+Arguably, an organism's body size is its most important trait. Because demographic and physiological rates are often correlated with body size, this may have profound effects on ecological interactions, the flow of energy across food webs, and the dynamics and distributions of populations (Brown *et al.*, 2004; Woodward *et al.*, 2005). Furthermore, size introduces feeding constraints, such that the size of the resource will influence who can consume it, which affects the consumer's feeding behaviour and selection of prey (Pape and Bonhommeau, 2015). This may ultimately create size structure in a food web (Brose *et al.*, 2006). Consequently, a simple metric such as body size may encompass complex biological information about an ecosystem's function and structure, thus warranting further investigation. 
 
+Body size differences are particularly apparent in predator-prey interactions. One study exploring food webs in natural communities found that in 90% of cases, predators were larger than their prey (Cohen *et al.*, 1993). There are a number of hypotheses attempting to explain this relationship. Most frequently, it is attributed to the effect of temperature and resource availability. In ectotherms, body size and temperature have been shown to negatively correlate, a pattern known as the temperature-size rule (Gibert and DeLong, 2014). Importantly, temperature also affects a resource availability because it determines an environment's productivity (Yom-Tov and Greffen, 2011). With a focus on marine and terrestrial environments, Tucker and Rogers (2014) determined that the differences in size structure in mammalian food webs could be explained by productivity. They demonstrated that marine body size relationships were on average greater than those found in terrestrial ecosystems, ascribing this to the fact that resources are generally more abundant and less structurally complex in marine environments. Here, increased resource availability allowed for more energy flow across food webs to produce larger body sizes in mammals.   
 
+Feeding constraints, determined by a predator's feeding behaviour, could affect the amount of resources it can actually exploit from the environment. Even if resources are abundant, an organism's morphological constraints may limit how much energy it can intake, thus constraining size structure and resulting in small body size differences between predators and prey (Arim *et al.* 2007). On the other hand, pelagic ecosystems have relatively low productivity yet support predator-prey relationships with high size structure. In cases where energy flows from microscopic phytoplankton to large predatory fish, large differences in body size can still be obtained depending on a predator's feeding behaviour (Brose *et al.* 2006; McGarvey *et al.* 2016). 
 
-
-In general
-Yet, it is still relatively unknown factors govern body size. 
-
-- consumer size relationship to resources size = food web size structure 
-- body size >> governs trophic exchanges of energy = function of size
-
-- size structure 
-
-
-
-
-
-
-
-One type of interaction between organisms is the predator-prey interaction which allows us to generate food webs.  
-
-Cohen et al(1993) was able to determine that most predators that we see are bigger than the prey that they eat and there is a positive correlation for size increase in predators when prey size increases.  
-
-Animals that eat at a higer trophic levels don't neccessary have larger predator-prey ratios as discovered by Tucker and Rogers(2014) for marine and terrestrial mammals. 
-
-There have been many other experiments that compare the mass of predators to the mass of prey and they overall agree that there is a relationship between predator-prey mass. 
-
-However, are there other factors that can affect this relationship?
-
-From the *Marine predator and prey body sizes* dataset created by Barnes et al (2008), we want to show that location and feeding behavior are just two of the aforementioned factors that could influence this interaction. The dataset contains a vast amount of information that comes from 27 marine locations with 93 types of predators and prey.  
-
-
+Predator-prey body size relationships have been generally suggested to be positively correlated, yet empirical evidence suggests that the magnitude and direction of these relationships may vary. This suggests that there are likely various factors interacting to influence body size relationships. Using a dataset compiled by Barnes *et al.* (2008), we hope to determine what underlying factors best predict predator-prey body size relationships within various marine ecosystems. In particular, we will determine the role of marine habitats and feeding behaviours in influencing the strength of this interaction. 
 
 
 ```{r,echo=FALSE,fig.width=7, fig.height=6,warning=FALSE,fig.cap=paste("Fig.1: *Shows the log of Predator mass vs log of Prey Mass")}
@@ -238,12 +213,25 @@ ggplotly(colourplz)
 
 ```
 
-
-
-
-
-
 # Discussion
+
+We analyzed predator-prey body size relationships in marine ecosystems 
+
+- biomass relationships depend on what habitat you're in 
+    - different slope for same feeding type 
+
+- dataset limited us to studying interactions functionally
+-high predation could drive smaller body size
+
+
+## Caveats and Limitations 
+
+Several limitations have been identified that may be important in the interpretation of this work. First, while this dataset had over 30,000 entries, much of the data represented nonindependent records. There were multiple records for the same predator, and further, multiple records for the same species that we took into account using a linear mixed effects model. In spite of this, nonindependent observations may have decreased the sample size, thus making it unrepresentative of food webs in marine habitats. For example, out of the whole dataset, 3581 samples are of the Albacore tuna. Statistically, these samples represent a single unit -- consequently, instead of having 3581 samples, there is only 1 sample with 3581 values. As a result, this dataset was limited in what it could actually communicate in terms of how predator-prey body size relationships vary across marine habitats and feeding types. Second, due to the manner in which environmental data was obtained for each dataset, we did not directly include it in our analysis. Instead, because environmental variables correlate with certain habitats and locations, we used specific habitat as a proxy for its effect on body size relationships. It was then not possible to infer exactly what environmetal factors were important in determining predator-prey body size relationships.
+
+
+Third, because this dataset represents a compilation of work done by various studies, this .. For instance,
+
+# Conclusion
 
 
 
@@ -262,15 +250,26 @@ The software we used to create this document is the statistical Analysis program
 8)  plotly
 
 
-# References
+# Literature Cited
+
+Arim 
 
 1) Cohen, J. E., Pimm, S. L., Yodzis, P., & Saldana, J. (1993). *Body sizes of animal predators and animal prey in food webs*. Journal of Animal Ecology, 62, 67-78. doi:10.2307/5483
 
-2) C. Barnes, D. M. Bethea, R. D. Brodeur, J. Spitz, V. Ridoux, C. Pusineri, B. C. Chase, M. E. Hunsicker, F. Juanes, A. Kellermann, J. Lancaster, F. M?nard, F.-X. Bard, P. Munk, J. K. Pinnegar, F. S. Scharf, R. A. Rountree, K. I. Stergiou, C. Sassa, A. Sabates, and S. Jennings. 2008. *Predator and prey body sizes in marine food webs*. Ecology 89:881.http://www.esapubs.org/archive/ecol/E089/051/metadata.htm
+2) Brose 2006
 
-3) Tucker MA, Rogers TL. 2014, *Examining predator–prey body size, trophic level and body mass across marine and terrestrial mammals*. Proc. R. Soc. B 281:20142103., http://dx.doi.org/10.1098/rspb.2014.2103
+3) Brown 2004
 
+3) C. Barnes, D. M. Bethea, R. D. Brodeur, J. Spitz, V. Ridoux, C. Pusineri, B. C. Chase, M. E. Hunsicker, F. Juanes, A. Kellermann, J. Lancaster, F. M?nard, F.-X. Bard, P. Munk, J. K. Pinnegar, F. S. Scharf, R. A. Rountree, K. I. Stergiou, C. Sassa, A. Sabates, and S. Jennings. 2008. *Predator and prey body sizes in marine food webs*. Ecology 89:881.http://www.esapubs.org/archive/ecol/E089/051/metadata.htm
 
+Gibert and DeLong 2014
 
+McGarvey, Dowling, Cohen 2016
 
+Pape and Bon
 
+4) Tucker MA, Rogers TL. 2014, *Examining predator–prey body size, trophic level and body mass across marine and terrestrial mammals*. Proc. R. Soc. B 281:20142103., http://dx.doi.org/10.1098/rspb.2014.2103
+
+Woodward 2005
+
+Yom-Tov and Greffen
