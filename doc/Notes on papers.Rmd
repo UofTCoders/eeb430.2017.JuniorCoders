@@ -190,8 +190,111 @@ author: Junior Coders
     
     
     
+  -----------------------------  
     
+
+# Cohen et al (1993): Body sizes of animal predators and animal prey in food webs
+
+
+## Summary Given in the article 
+
+- We measured the body sizes (weights or lengths) of animal species found in the food webs of natural communities. In c. 90% of the feeding links among the animal species with known sizes, a larger predator consumes a smaller prey.
+
+- Larger predators eat prey with a wider range of body sizes than do smaller predators. The geometric mean predator size increases with the size of prey. The increase in geometric mean predator size is less than proportional to the increase in prey size (i.e. has a slope less than 1 on log-log coordinates).
+
+-The geometric mean sizes of prey and predators increase as the habitat of webs changes from aquatic to terrestrial to coastal to marine. Within each type of habitat, mean prey sizes are always less than mean predator sizes, and prey and predator sizes are always positively correlated.
+
+-Feeding relations order the metabolic types of organisms from invertebrate to vertebrate ectotherm to vertebrate endotherm. Organisms commonly eat other organisms with the same or lower metabolic type, but (with very rare exceptions) organisms do not eat other organisms with a higher metabolic type. Mean sizes of prey increase as the metabolic type of prey changes from invertebrate to vertebrate ectotherm to vertebrate endotherm, but the same does not hold true for predators.
+
+-Prey and predator sizes are positively correlated in links from invertebrate prey to invertebrate predators. In links with other combinations of prey and predator metabolic types, the correlation between prey and predator body sizes is rarely large when it is positive, and in some cases is even negative.
+
+-Species sizes are roughly log-normally distributed.
+
+-Body size offers a good (though not perfect) interpretation of the ordering of animal species assumed in the cascade model, a stochastic model of food web structure. When body size is taken as the physical interpretation of the ordering assumed in the cascade model, and when the body sizes of different animal species are taken as log-normally distributed, many of the empirical findings can be explained in terms of the cascade model.
+
+
+## Introduction 
+*
+-Size influences
+    -how much energy an animal needs
+    -how much food it can gather
+    -and which other rganisms can try to eat it*
     
+
+-To investigate further the possibility that there exist general relations between body size and food web structure
+    - we assemble here and analyse data relating body size to feeding links among diverse taxonomic groups of animals in a diversity of food
+    webs
+
+
+## Materials and methods
+
+### Dataset
+
+-Dataset 1: 
+      -determined the average adult weights (g) of as many as possible of the animal species in the first 40 community food webs of the             Briand-Cohen collection
+      -weights were determined using published data, scaling formulae, weighing of specimens and, in a few cases, calculation from 
+      the geometry of the animals.
+      -For each web, we constructed the subweb containing the species with known weights
+      -We excluded any subweb with species of known weights that had fewer than 10 links because we wanted a 'large' sample of links in each 
+      web for the randomization test of the effect of body size
+      -Data set A thus consists of the 18 subwebs of community food webs listed in Table 1 and of the weights associated with each of the 262
+      species in these webs
+
+-Dataset 2: 
+        -independently determined the lengths (cm) of as many as possible of the animal species in prey-predator pairs in 30 webs from a
+        compendium of sink, source and community webs assembled by Anthony W. King & S.L. Pimm (S.L. Pimm, personal communication).
+        -Lengths were used to measure body sizes because they can easily be measured from illustrations.
+
+
+## Results
+
+-Body size explains a large fraction of the ordering of species in feeding links.
+
+-The number of links with smaller predator than prey is much less than would be expected if the ordering of species in webs were independent of body size
+    -Thus, in most webs the role of size is dominant. In no case is it small.
+
+-*There is no evident pattern of association between the relative importance of size and the type of habitat in which the web is observed*.
+
+
+*-In both data sets, in all habitats (Table 2), the geometric mean size of predators exceeds that of prey by a substantial factor*
+
+
+## Discussion 
+
+
+
+
+     -------------------------------------------------
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
