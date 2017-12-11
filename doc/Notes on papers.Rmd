@@ -190,6 +190,8 @@ author: Junior Coders
     
     
     
+    
+    
   -----------------------------  
     
 
@@ -261,9 +263,11 @@ author: Junior Coders
 
 ## Discussion 
 
+-They pointed out that length is not an equally good indicator of size across a range of very differently shaped species
 
+-feeding observed in a confined test chamber with a single species of predator and a single species of prey may not necessarily reflect feeding in nature.
 
-
+-Body size or some variable highly correlated with it is far more closely associated with the direction of predation among animals in nature than could be accounted for by chance alone.
      -------------------------------------------------
      
 
