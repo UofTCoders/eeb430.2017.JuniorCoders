@@ -12,6 +12,27 @@ library(MuMIn)
 library(lme4)
 ```
 
+
+
+
+```{r functions, include=FALSE}
+# A function for captioning and referencing images
+fig <- local({
+    i <- 0
+    ref <- list()
+    list(
+        cap=function(refName, text) {
+            i <<- i + 1
+            ref[[refName]] <<- i
+            paste("Figure ", i, ": ", text, sep="")
+        },
+        ref=function(refName) {
+            ref[[refName]]
+        })
+})
+``` 
+```
+
 ```{r}                      
 Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
 problems(Pred)
@@ -116,7 +137,7 @@ pred_prey_dataset %>%
 
 # Predacious data
 
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=7, fig.height=4,fig.cap=paste("RAWRWARAWRWAR")}}
 
 predacious <- pred_prey_dataset %>% 
     filter(Type_of_feeding_interaction == 'predacious') %>% 
