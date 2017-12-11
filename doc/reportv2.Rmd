@@ -38,6 +38,8 @@ jrc_theme <- function() {
 
 
 ```{r,warning=FALSE, include=FALSE}
+# Packages
+
 library(tidyverse)
 library(dplyr)
 library(readxl)
@@ -51,6 +53,8 @@ library(plotly)
 
 
 ```{r,warning=FALSE, include=FALSE}
+# Dataset (Barnes *et al.*, 2008)
+
 Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
 colnames(Pred) <- gsub(" ", "_", colnames(Pred))
 
