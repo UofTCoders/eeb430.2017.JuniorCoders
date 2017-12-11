@@ -27,7 +27,6 @@ jrc_theme <- function() {
         legend.position = "bottom")
 }
 
-
 ```
 
 
@@ -240,6 +239,9 @@ kable(model.sel(lm9, lm10, lm11,null, lm12, rank = AIC))
 *Table.1: Results of our models*
 
 
+```{r,warning=FALSE, echo=FALSE}
+kable(anova(  lm9, lm10, lm11,null, lm12))
+```
 
 
 # Discussion
