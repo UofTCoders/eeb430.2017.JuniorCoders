@@ -8,84 +8,84 @@ author: Junior Coders
 
 ## Introduction
 - Differences in body size between predators and prey important for determining strength of interactions, population dynamics, food web structure, function, evolution. Linked to locomotion, dispersal, niche use, biological rates.
-- Trophic links and interaction strengths in communities can reflect size constraints on who eats who -- **body size relationships can explain food web structure and stability**. 
+- Trophic links and interaction strengths in communities can reflect size constraints on who eats who -- **body size relationships can explain food web structure and stability**.
 - Do predator-prey relationships vary among habitats or taxonomic groups?
-- They show that the mean body size ratios of herbivores, detritivores, and carnivores are different. 
+- They show that the mean body size ratios of herbivores, detritivores, and carnivores are different.
 - Predators tend to be larger than prey, but how does this relationship vary across ecosystems and predator types?
 - **Size constraints on feeding could be related to habitat structure -- for this reason, predator-prey relationships could differ across habitats.**
 
 ## Methods
-- Use average body masses of predator-prey links. 
-- Data includes: different consumer and resource types across different habitats. 
-- For interactions, calculate the log ratio of predator mass over prey mass. The log ratios were analyzed for significant differences using an ANOVA among feeding types (I guess they calculated the mean for each feeding type?). 
-- Excluded outliers of the dataset with residuals that deviated more than 3 SDs. 
+- Use average body masses of predator-prey links.
+- Data includes: different consumer and resource types across different habitats.
+- For interactions, calculate the log ratio of predator mass over prey mass. The log ratios were analyzed for significant differences using an ANOVA among feeding types (I guess they calculated the mean for each feeding type?).
+- Excluded outliers of the dataset with residuals that deviated more than 3 SDs.
 - Three regressions were carried out:
-    - log predator mass as a function of log prey mass 
-    - log prey mass as a function of log predator mass 
+    - log predator mass as a function of log prey mass
+    - log prey mass as a function of log predator mass
     - major axis regression that treats both variables symmetrically (?)
 
-## Results 
-- Consumer-resource log body mass ratios differ among feeding types. 
+## Results
+- Consumer-resource log body mass ratios differ among feeding types.
     - Smaller consumer versus larger resource
     - Equally sized
     - Large consumer consumer versus small resource
 - **Figure 1**: Log predator mass versus prey mass
     - Major axis regression line explains most of the variation (86%)
 - **Figure 2**: Predator-prey body size ratios across different habitat categories and predator types.
-    - Interaction between predator type and habitat category explaining the variance in body mass ratios. 
-    - Size differences according to predator type tend to be bigger in certain habitats. 
+    - Interaction between predator type and habitat category explaining the variance in body mass ratios.
+    - Size differences according to predator type tend to be bigger in certain habitats.
 - **Table 1**: Mean measures of ratios, log predator mass, log prey mass across different habitats and feeding types.
-    - Compared different TYPE OF PREDATOR (e.g. invertebrate predators) in different habitats to see if the mean ratios were significantly different (using a Scheffé post hoc test). 
-    - The mean ratios also depended on PREY TYPE (i.e. feeding type, like planktivorous). 
-    
+    - Compared different TYPE OF PREDATOR (e.g. invertebrate predators) in different habitats to see if the mean ratios were significantly different (using a Scheffé post hoc test).
+    - The mean ratios also depended on PREY TYPE (i.e. feeding type, like planktivorous).
+
 ## Discussion
 - **Consumer-resource body-mass ratios**
-- Predators on average larger than prey. 
-- Different body mass ratios might suggest that predator-prey dynamics are different. 
-- Aquatic systems: consumers are often gape-limited, ingest whole-particles, small, short generation times, shorter growth rates. 
-- Terrestial systems: usually large with long-generation times. 
+- Predators on average larger than prey.
+- Different body mass ratios might suggest that predator-prey dynamics are different.
+- Aquatic systems: consumers are often gape-limited, ingest whole-particles, small, short generation times, shorter growth rates.
+- Terrestial systems: usually large with long-generation times.
 
 - ** Predator-prey body-mass ratios**
-- Most predators larger than prey, prey and predator size increase together. 
-- Linear models assume that predictor variables were measured without error, normal distributions. 
-- Body mass ratios higher for: 
-    - Vertebrate predators than for invertebrates predators 
-    - Ectotherm vertebrate predators in freshwater habitats than in terrestial or marine habitats. 
-- Higher ratios reflect higher prey body-masses. 
-- **Author says**: More information is needed for pelagic marine ecosystems (although they don't really provide any information about other marine ecosystems) to analyze differences between marine, freshwater, benthic... 
-    - Note: We can do marine and possibly benthic? 
-    - They also didn't consider non-independence of data? idk 
-    
-- **Caveats**
-- 
+- Most predators larger than prey, prey and predator size increase together.
+- Linear models assume that predictor variables were measured without error, normal distributions.
+- Body mass ratios higher for:
+    - Vertebrate predators than for invertebrates predators
+    - Ectotherm vertebrate predators in freshwater habitats than in terrestial or marine habitats.
+- Higher ratios reflect higher prey body-masses.
+- **Author says**: More information is needed for pelagic marine ecosystems (although they don't really provide any information about other marine ecosystems) to analyze differences between marine, freshwater, benthic...
+    - Note: We can do marine and possibly benthic?
+    - They also didn't consider non-independence of data? idk
 
-# Gibert and DeLong, 2014: Temperature alters food web body-size structure 
+- **Caveats**
+-
+
+# Gibert and DeLong, 2014: Temperature alters food web body-size structure
 
 ## Introduction
-- Body size influences: landscape use and locomotion, energetic requirements, *prey selection*. For the reasons below, likely important for species persistence, food web complexity and stability. 
+- Body size influences: landscape use and locomotion, energetic requirements, *prey selection*. For the reasons below, likely important for species persistence, food web complexity and stability.
 - Large organisms tend to eat large prey. The ratio affects:
     - predator-prey dynamics
-    - interaction strengths 
+    - interaction strengths
     - trophic position
     - size structure (in food webs)
-    - function of food webs 
-- Body size often declines with temperature -- this is the temperature size rule. Could affect the way species interact -- smaller organisms tend to eat smaller prey. 
+    - function of food webs
+- Body size often declines with temperature -- this is the temperature size rule. Could affect the way species interact -- smaller organisms tend to eat smaller prey.
 - Increasing temperature can decrease average body in food webs and have important consequences for food web stability and species persistence:
     - reduces the number of trophic levels
     - reduces overall food web connectivity
-- Does tempreature alter relationship between predator and prey body size?    
+- Does tempreature alter relationship between predator and prey body size?
 
 ## Methods
-- Three linear mixed effects models aimed at controlling hierarchical structure of the data. 
+- Three linear mixed effects models aimed at controlling hierarchical structure of the data.
     - Model 1: prey body size is the response variable, habitat type is the random intercept, predator identify (species) is the random slope.
     - Model 2: same model as above (i.e. same random effects, I think?) but with additive effect of temperature.
     - Model 3: interaction effect of predator body mass and temperature as the random effects.
-- Used AIC to determine the best model. 
+- Used AIC to determine the best model.
 
-## Results 
+## Results
 - Prey size increases with predator size and depends on the effect of temperature.
-- Temperature is increasing the size of the relationship but decreases the slope. The reverse is true for large predators. 
-- A slope close to 1 suggests that body sizes remain constant across predator mass sizes. 
+- Temperature is increasing the size of the relationship but decreases the slope. The reverse is true for large predators.
+- A slope close to 1 suggests that body sizes remain constant across predator mass sizes.
 
 ## Discussion
 - They show that the relationship between prey and predator size is depenent on the interaction between temperature and predator body size.
@@ -93,33 +93,33 @@ author: Junior Coders
 - Consequences of differences in body size change and structure:
     - Range of body sizes will be different depending on temperature.
     - Trophic level of a species can vary across temperature because trophic level icreases with body size, and temperature affects body size.
-    - Intermediate tophic levels (intermediate body sizes) likely least affect by body size-temperature interaction. 
-    - Differential effect of temperature on predator and prey body sizes -- with warming, predators are becoming smaller faster than their prey. 
-- Temperature effects predator-prey body sizes could scale up to interaction and food web scaling. 
+    - Intermediate tophic levels (intermediate body sizes) likely least affect by body size-temperature interaction.
+    - Differential effect of temperature on predator and prey body sizes -- with warming, predators are becoming smaller faster than their prey.
+- Temperature effects predator-prey body sizes could scale up to interaction and food web scaling.
     - Interactions strenghts are typically large at high trophic levels because body sizes are large.
 
-# Tucker and Rogers 2014: Examining predator-prey body size, trophic level and body mass across marine and terrestial mammals 
+# Tucker and Rogers 2014: Examining predator-prey body size, trophic level and body mass across marine and terrestial mammals
 
-## Introduction 
-- Mammals exploit variety of habitats, niches, feeding ecologies. 
+## Introduction
+- Mammals exploit variety of habitats, niches, feeding ecologies.
 - Feeding ecology -- two relationships are used to investigate this: trophic level and body mass.
-- Energetic requirements -- large mammalian carnivores tend to feed on large prey. Larger carnivores also tend to have higher trophic levels. 
-    - This is the idea that food webs are size structured: large predators tend to feed on large prey and vice versa. 
-- Productivity differs between marine and terrestial environments. 
-    - Marine: 
-        - Lots of single celld plants like phytoplankton are primary producers -- energy flow is faster and more readily accessible: high turnover rate. 
-        - Aquatic systems tend to be really size structured -- trophic interactions driven by large consumers feeding on smaller species. 
+- Energetic requirements -- large mammalian carnivores tend to feed on large prey. Larger carnivores also tend to have higher trophic levels.
+    - This is the idea that food webs are size structured: large predators tend to feed on large prey and vice versa.
+- Productivity differs between marine and terrestial environments.
+    - Marine:
+        - Lots of single celld plants like phytoplankton are primary producers -- energy flow is faster and more readily accessible: high turnover rate.
+        - Aquatic systems tend to be really size structured -- trophic interactions driven by large consumers feeding on smaller species.
     - Terrestial:
-        - Most primary producers are here, turnover rate is much slower. 
+        - Most primary producers are here, turnover rate is much slower.
 - Three patterns we might expect in the relationship between trophic level and body mass:
     (1) Differences in environmental variables driving trophic patterns across mammals, expectation of positive relationship between trophic level and body mass.
     (2) Body mass is driving trophic level patterns.
-    (3) Quadratic trophic-level-body-mass relationship. 
-- Predator-prey body mass ratios: info about food web complexity, ecosystem stability, community structure. 
-    - More stable with large predators because its harder for new invasive predators to come in and outcompete native predators. 
+    (3) Quadratic trophic-level-body-mass relationship.
+- Predator-prey body mass ratios: info about food web complexity, ecosystem stability, community structure.
+    - More stable with large predators because its harder for new invasive predators to come in and outcompete native predators.
 - Investigating the relationship between body size, trophic level and PP ratio across mammals:
     (1) How do differences between consumers within terrestrial and marine environments influence trophics and food web structure of mammamls
-    (2) test whether there is a negative relationship between PP ratio and predator trophic level across mammals. 
+    (2) test whether there is a negative relationship between PP ratio and predator trophic level across mammals.
 
 ## Materials and methods
 
@@ -129,76 +129,76 @@ author: Junior Coders
 ### Predator-prey body mass
 - PP was calculated for carnivorous species by dividing the average mass of each predator species by their average prey mass.
 
-### Analysis 
-- They made some models. 
+### Analysis
+- They made some models.
 - The likelihood of a given model explaining species differences in trophic levels determined by AIC.
 - Lowest AIC = highest support. Any models within two units of the lowest model were also likely candidates (delta AIC <2).
-- For the model that got the most support, extracted 95% confidence intervals of the slope values, assessed the allometric effects associated with predictor variables. 
+- For the model that got the most support, extracted 95% confidence intervals of the slope values, assessed the allometric effects associated with predictor variables.
 
-## Discussion 
+## Discussion
 
-### The effects of body mass on trophic position 
+### The effects of body mass on trophic position
 
 - **The evolution of trophic position in mammalian carnivores appears to be driven by the environment they live in.**
 - Marine carbivores are usually higher in trophic level than mammals -- likely driven by complexities in nature of marine food webs where there are higher levels of trophic levels and interactions between trophic levels.
 - Strong relationship between body mass and trophic level in mammals only.
 - No positive relationship between body mass and trophic level for terrestiral mammals.
 
-### Environmental effects on herbivory 
+### Environmental effects on herbivory
 
-- Productivity seems to drive differences in trophic level patterns and food web structures across two environments. 
-- Marine productivity -- driven by high quantities of small single celled primary producers -- reverse of trophic level patterns and food web structures found on land. 
-    - Single-celled phytoplankton: don't really have chemical defenses, fast growth rates, lots of photosynthetic tissue high in P and N. 
+- Productivity seems to drive differences in trophic level patterns and food web structures across two environments.
+- Marine productivity -- driven by high quantities of small single celled primary producers -- reverse of trophic level patterns and food web structures found on land.
+    - Single-celled phytoplankton: don't really have chemical defenses, fast growth rates, lots of photosynthetic tissue high in P and N.
     - This allows marine herbivores to feed on lots of nutrient-rich phytoplankton at once that is easily digestible.
-    
-### Environmental effects on carnivory 
+
+### Environmental effects on carnivory
 
 - Lots of nutrients in marine environments means more mammalian carnivores in marine ecosystems can be supported.
-- Phytoplankton support zooplankton (primary consumers) which scale up trophic levels. The small size and fast generation times of zooplanktonic species means they can reproduce quickly -- you get lots of primary productivity. This is pretty much an algal bloom. 
+- Phytoplankton support zooplankton (primary consumers) which scale up trophic levels. The small size and fast generation times of zooplanktonic species means they can reproduce quickly -- you get lots of primary productivity. This is pretty much an algal bloom.
 
-### Body size, diet and environment 
+### Body size, diet and environment
 
-- Mammals with increasing body mass probably have less prey items to consume -- this is for terrestrial habitats. 
+- Mammals with increasing body mass probably have less prey items to consume -- this is for terrestrial habitats.
     - Large carnivores need lots of resources but there are only so many resources available. This is the case for large mammals, which are generally herbivorous.
     - Most primary productivity has lignin in it which is hard for mammals to digest -- mammals have lots of adaptations to be able to break these things down.
     - Resource availability limits how large body sizes can get -- energetic costs, need for reliable resources.
 - Marine environments see an increase in body size:
-    - Thermal advantages, prey availability, hunting efficiency = larger bodies. 
+    - Thermal advantages, prey availability, hunting efficiency = larger bodies.
     - Marine carnivores are better hunters, waste less energy than terrestrial carnivores which spend a lot of energy.
-    - Marine vegetation contains small amounts of lignin = more nutrients for marine consumers which passes through the food web. 
-        - Higher population sizes, more stability in terms of its feeding behaviour. E.g. terrestrial mammals change their diet depending on food availability, vs. marine mammals usually stick to a single diet. 
+    - Marine vegetation contains small amounts of lignin = more nutrients for marine consumers which passes through the food web.
+        - Higher population sizes, more stability in terms of its feeding behaviour. E.g. terrestrial mammals change their diet depending on food availability, vs. marine mammals usually stick to a single diet.
 - And so you see changes in body mass based on different diets, and there are also changes in the minimum and maximum body size trends.
-    - Driven by: environmental characteristics, physiology, resource availability. 
+    - Driven by: environmental characteristics, physiology, resource availability.
 
-### Trophic level and predator-prey ratio relationships 
+### Trophic level and predator-prey ratio relationships
 
-- General rule: As trophic level increases, carnivores feed on prey with body mass more similar to their own (equal to 1). 
-    - increasing body mass with trophic level for endotherms, increasing prey mass with increasing carnivore body mass. 
+- General rule: As trophic level increases, carnivores feed on prey with body mass more similar to their own (equal to 1).
+    - increasing body mass with trophic level for endotherms, increasing prey mass with increasing carnivore body mass.
 - But in this study:
-    - No relationship between trophic level and carnivore body mass. 
+    - No relationship between trophic level and carnivore body mass.
     - Positive relationship between carnivore body size and prey body size seen in terrestrial mammals, but **NOT IN MARINE CARNIVORES**.
-- Large PP ratios in marine systems not seen in terrestrial systems. 
+- Large PP ratios in marine systems not seen in terrestrial systems.
     - Small prey do not form huge abundant groups as they do in marine systems: bulk feeding, minimal capture and processing time.
-- Trophic efficiency -- exchange of energy between trophic levels based on predator-prey interactions. 
-    - Large PP ratios: trophic efficiency decreases. 
-- Trophic efficiency has important implications for energy flow through an ecosystem, community structure and dynamics. 
+- Trophic efficiency -- exchange of energy between trophic levels based on predator-prey interactions.
+    - Large PP ratios: trophic efficiency decreases.
+- Trophic efficiency has important implications for energy flow through an ecosystem, community structure and dynamics.
     - Not a big issue in marine systems because large PP tends to stabilize marine food webs. Large PPs reduce interaction strengths between predators and prey
 - Bias in data:
     - Information reliant on published dietary studies which biases data to well-studied species.
 - Broad study of how environment affects ecological patterns in marine systems.
 - Results demonstrate primary productivity and its availability important for trophic structure of food webs, body size, prevalence of carnivory and herbivory. - Pattern of trophic level and PP ratio stroner within each environment.
-    
-    
-    
-    
-    
-  -----------------------------  
-    
+
+
+
+
+
+  -----------------------------
+
 
 # Cohen et al (1993): Body sizes of animal predators and animal prey in food webs
 
 
-## Summary Given in the article 
+## Summary Given in the article
 
 - We measured the body sizes (weights or lengths) of animal species found in the food webs of natural communities. In c. 90% of the feeding links among the animal species with known sizes, a larger predator consumes a smaller prey.
 
@@ -215,13 +215,13 @@ author: Junior Coders
 -Body size offers a good (though not perfect) interpretation of the ordering of animal species assumed in the cascade model, a stochastic model of food web structure. When body size is taken as the physical interpretation of the ordering assumed in the cascade model, and when the body sizes of different animal species are taken as log-normally distributed, many of the empirical findings can be explained in terms of the cascade model.
 
 
-## Introduction 
+## Introduction
 *
 -Size influences
     -how much energy an animal needs
     -how much food it can gather
     -and which other rganisms can try to eat it*
-    
+
 
 -To investigate further the possibility that there exist general relations between body size and food web structure
     - we assemble here and analyse data relating body size to feeding links among diverse taxonomic groups of animals in a diversity of food
@@ -232,17 +232,17 @@ author: Junior Coders
 
 ### Dataset
 
--Dataset 1: 
+-Dataset 1:
       -determined the average adult weights (g) of as many as possible of the animal species in the first 40 community food webs of the             Briand-Cohen collection
-      -weights were determined using published data, scaling formulae, weighing of specimens and, in a few cases, calculation from 
+      -weights were determined using published data, scaling formulae, weighing of specimens and, in a few cases, calculation from
       the geometry of the animals.
       -For each web, we constructed the subweb containing the species with known weights
-      -We excluded any subweb with species of known weights that had fewer than 10 links because we wanted a 'large' sample of links in each 
+      -We excluded any subweb with species of known weights that had fewer than 10 links because we wanted a 'large' sample of links in each
       web for the randomization test of the effect of body size
       -Data set A thus consists of the 18 subwebs of community food webs listed in Table 1 and of the weights associated with each of the 262
       species in these webs
 
--Dataset 2: 
+-Dataset 2:
         -independently determined the lengths (cm) of as many as possible of the animal species in prey-predator pairs in 30 webs from a
         compendium of sink, source and community webs assembled by Anthony W. King & S.L. Pimm (S.L. Pimm, personal communication).
         -Lengths were used to measure body sizes because they can easily be measured from illustrations.
@@ -261,7 +261,7 @@ author: Junior Coders
 *-In both data sets, in all habitats (Table 2), the geometric mean size of predators exceeds that of prey by a substantial factor*
 
 
-## Discussion 
+## Discussion
 
 -They pointed out that length is not an equally good indicator of size across a range of very differently shaped species
 
@@ -269,7 +269,7 @@ author: Junior Coders
 
 -Body size or some variable highly correlated with it is far more closely associated with the direction of predation among animals in nature than could be accounted for by chance alone.
      -------------------------------------------------
-     
+
 
 
 
