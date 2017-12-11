@@ -80,12 +80,14 @@ From the *Marine predator and prey body sizes* dataset created by Barnes et al (
 
 
 
-```{r,echo=FALSE,fig.width=7, fig.height=6,warning=FALSE,fig.cap=paste("Fig.1: *Shows the log of Predator mass vs log of Prey Mass")}
+```{r,echo=FALSE,fig.width=7, fig.height=6,warning=FALSE,fig.cap=paste("Fig.1: *Shows the log of Predator mass vs log of Prey Mass*")}
 
  pred_prey_dataset %>% 
      ggplot(aes(x = log(Predator_mass), y = log(Prey_mass))) +
      geom_hex(bins = 50) +
      geom_smooth(method = "glm", colour = "Red") +
+    xlab("Log (Predator Mass)")+
+    ylab("Log (Prey Mass)")+
     jrc_theme()
 
 
@@ -93,11 +95,15 @@ From the *Marine predator and prey body sizes* dataset created by Barnes et al (
 
 
 
-```{r, fig.width=8, fig.height=5, echo=FALSE,fig.cap=paste("Fig.2: *Shows the log of Predator mass vs log of Prey Mass by Specific Habitat*")}
+```{r, fig.width=9, fig.height=5, echo=FALSE,fig.cap=paste("Fig.2: *Shows the log of Predator mass vs log of Prey Mass by Specific Habitat*")}
 
 pred_prey_dataset %>% 
     ggplot(aes(x = log(Predator_mass), y = log(Prey_mass), colour = Specific_habitat)) +
-   geom_point()
+   geom_point()+
+    xlab("Log (Predator Mass)")+
+    ylab("Log (Prey Mass)")+ 
+    labs(color='Specific Habitat') +
+    jrc_theme()
 
 
 ```
@@ -107,13 +113,21 @@ pred_prey_dataset %>%
 
 ```{r, fig.width=8, fig.height=6, echo=FALSE,fig.cap=paste("Fig.4")}
 # Fig. 2b
+
+    
 Pred %>%
     ggplot(aes(x = log(Predator_mass),
                y = log(Prey_mass),
                colour = Type_of_feeding_interaction)) +
     geom_point(size = 0.01) +
     facet_wrap(~ Specific_habitat) +
-    geom_smooth(method = 'glm', colour = 'black', size = 0.5) 
+    geom_smooth(method = 'glm', colour = 'black', size = 0.5) +
+      xlab("Log (Predator Mass)")+
+    ylab("Log (Prey Mass)")+
+    labs(color='Type of Feeding Interaction') +
+    jrc_theme()
+    
+
     
 ```
 
@@ -186,15 +200,22 @@ kable(model.sel(lm9, lm10, lm11,null, lm12, rank = AIC))
 ### Graphs 
 
 ```{r, fig.width=11, fig.height=5, warning=FALSE, echo=FALSE}
-    ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
+
+    pho2 <- ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
     geom_line(aes(colour = Specific_habitat))+facet_grid(~ Type_of_feeding_interaction) + null_line +
-    jrc_theme()
+    jrc_theme()+
+    xlab("Log (Predator Mass)")+
+    labs(colour = "Specific Habitat")
+    
+    
+
+ggplotly(pho2)
    
 ```
 
 
 
-```{r,warning=FALSE, echo=FALSE}
+```{r,fig.width=9,warning=FALSE, echo=FALSE}
 
 fitdata11 <- ranef(lm11)[[1]] %>% 
     rownames_to_column()%>% as_data_frame() %>% 
@@ -202,12 +223,18 @@ fitdata11 <- ranef(lm11)[[1]] %>%
 
 colnames(fitdata11)[4] <- c("slope")
 
-colourplz <- fitdata11 %>% 
+fitdata11 %>% 
     ggplot(aes(x = feeding_type, y = fixef(lm11)[[2]] + slope,color = habitat))+
     geom_point() + 
-    geom_hline(yintercept = tidy(null)[2,2])
+    geom_hline(yintercept = tidy(null)[2,2])+
+    xlab("Type of Feeding")+
+    ylab("Slope of log (Prey mass) vs Log (Predator Mass)")+
+    labs(colour = "Habitat")+
+    jrc_theme()
 
-ggplotly(colourplz)
+
+
+
 
 ```
 
