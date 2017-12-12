@@ -233,7 +233,7 @@ A third pattern is also possible but involves limitations of the dataset. It is 
 
 # Conclusion
 
-
+In short, we can conclude that the relationship between prey and predator size can be affected by habitat and the interaction between habitat and predators’ feeding type, and interpreting the relationship by general trend may lead to Simpsons’ paradox. There might be some other potential parameters to help predict the relationship, for example, surface temperature, depth, primary productivity, etc. However, due to the limitation of our data set, we can not make a further conclusion. The sample size for each subgroup is not even, which might affect our result as well. In further, if a larger and more informative dataset can be made, it will be very helpful to generate a better model.
 
 
 
