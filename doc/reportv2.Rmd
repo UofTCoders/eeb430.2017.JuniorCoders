@@ -11,8 +11,11 @@ output:
     toc_depth: '4'
 ---
 
+# Abstract
 
-gdasgagds
+Body size is an easily measured trait that has pervading effects for an ecosystem's structure and function because it governs ecological interactions, population abundances and distributions, and trophic exchanges. Yet, it is still debated what factors drive body size relationships in predator-prey interactions. It is often assumed that predator-prey size relationships are positively correlated in such a way where predators are usually larger than their prey. Here, we argue that predator-prey body size relationship are mediated by key predictors that may be correlated with certain habitat types, and which may not consistently produce positive associations. Further, we also ask whether a predator's feeding behaviour influences size relationships. Feeding behaviours determine the amount of resources that can be exploited from an environment, and is mediated by physiological and morphological constraints that control the amount of energy that can be allocated to body size. We explore these questions using a dataset assembled by Barnes *et al.* (2008), which summarizes marine predator-prey relationships in terms of specific interactions, mass, habitat sampled, and feeding type. Overall, we hope to determine the distribution predator-prey body size relationships across marine habitats and how it varies with feeding behaviours. 
+
+
 ```{r,warning=FALSE, include=FALSE}
 
 
