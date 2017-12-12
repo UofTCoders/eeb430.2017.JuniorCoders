@@ -1,6 +1,5 @@
 ---
 title: "R Notebook"
-output: html_notebook
 ---
 
 ```{r}
@@ -147,6 +146,8 @@ planktivorous %>%
 
 # Piscivorous data
 
+<<<<<<< HEAD:doc/Pred_farhan.Rmd
+=======
 ```{r}
 piscivorous <- pred_prey_dataset %>% 
     filter(Type_of_feeding_interaction == 'piscivorous') %>% 
@@ -187,6 +188,7 @@ fit1 <-  glm(Prey_mass ~ Specific_habitat, data = pred_prey_dataset, family = ga
 tidy(fit1)
 
 ```
+>>>>>>> 2556d23e52845cb09df46608aef04fca71739f95:doc/Pred.Rmd
 
 
 
