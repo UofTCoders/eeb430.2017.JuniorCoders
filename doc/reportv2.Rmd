@@ -230,22 +230,6 @@ fitdata11 %>%
 ```
 
 
-# Results
-
-The first graph shows a positive correlation between the log of predator mass and the log of prey mass; visualized via a linear regression line. As the dataset indicated, prey mass was determined off predator mass; ergo prey mass is the dependent variable.
- 
-Second graph is a map-graph representing the locations of the sample locations (MORE TO COME)
- 
-Third graph is the one that details how feeding behaviour and specific habitat affect the interaction of predator-prey mass. We can generalize the feeding behaviours of the predators into two categories: specialist feeders (the predators categorized as piscivorous, insectivorous, and herbivorous) and generalist feeders (categorized only has predacious). All the graphs under the specialist feeders showed a mild to strong positive correlation between predator and prey mass.
-*In the piscivorous column, of the ten total plots, 8 of them show a positive correlation, 2 of them show neutral correlation
-*In the planktivourous column, of the six plots that have a linear regression, 5 of them are positive in correlation, the last one shows a neutral correlation.
-On the other hand, within the graphs under generalist feeders, there were a variety of trends; some showed positive correlations, but also some interactions were neutral and even negative in correlation.
-*There are 12 plots in the column under predacious. 6 of the plots show an indication of positive trend, 5 show a neutral correlation, and one show a negative correlation. 
-
-
-
-### Models
-
 
 ```{r,warning=FALSE, include=FALSE}
 model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
