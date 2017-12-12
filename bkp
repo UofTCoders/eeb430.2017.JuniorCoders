@@ -1,0 +1,43 @@
+---
+title: "Final Project"
+author: "Farhan Majumder, Leila Krichel, Rui Zhou, Jeffrey Nguyen"
+date: "November 23, 2017"
+output: html_document
+---
+
+**Introduction**
+
+Animals come in many different shapes and sizes and they can be seen interacting with each other in many forms.  One type of interaction between organisms is the predator-prey interaction which allows us to generate food webs. Animals with a large size have the ability to eat larger prey compared to predators with smaller size, therefore, they would be at a higher trophic level.  There are many articles that compare the ratio between predator-prey interactions(REFERENCES) and they agree that predator mass does increase with prey mass.  However, are there factors that can affect this relationship?  
+
+From the *Marine predator and prey body sizes* dataset created by Barnes et al (2008), we determined that location and feeding behavior are just two of the aforementioned factors that could influence this interaction. The dataset contains information about 27 marine locations with 93 types of predators and 
+
+
+**Results**
+**discussion**
+**Introduction**
+
+**References**
+
+1) Cohen, J. E., Pimm, S. L., Yodzis, P., & Saldana, J. (1993). *Body sizes of animal predators and animal prey in food webs*. Journal of Animal Ecology, 62, 67-78. doi:10.2307/5483
+
+2) C. Barnes, D. M. Bethea, R. D. Brodeur, J. Spitz, V. Ridoux, C. Pusineri, B. C. Chase, M. E. Hunsicker, F. Juanes, A. Kellermann, J. Lancaster, F. M?nard, F.-X. Bard, P. Munk, J. K. Pinnegar, F. S. Scharf, R. A. Rountree, K. I. Stergiou, C. Sassa, A. Sabates, and S. Jennings. 2008. *Predator and prey body sizes in marine food webs*. Ecology 89:881.http://www.esapubs.org/archive/ecol/E089/051/metadata.htm
+
+3) Brose, U., Williams, R. J., & Martinez, N. D. (13 october 2006). *Allometric scaling enhances stability in complex food webs*. Ecology Letters, 9(11), 1228-1236. doi:10.1111/j.1461-0248.2006.00978.x
+
+
+Predator-prey relationships are ubiquitous throughout the world.  
+
+
+The natural environment is full of interactions between organisms.  These interactions can either be beneficial like mutualism such as plant producing nectar for ants which defend them or detrimental such as predator and prey.  
+
+
+Animals come in many different shapes and sizes and they can be seen interacting with each other in many forms.  One of the most common type of interaction is the predator-prey relationship which generates food webs.  In predator-prey interactions, we can see that 90% of predators are bigger than the prey that they eat (JOEL E. COHEN,1993).  In general, literature suggests that there is a correlation between prey mass and predator mass (Brose 2006).  There are a variety of factors that can affect predator-prey interactions.  From the Marine predator and prey body sizes dataset created by Barnes et al (2008), we determined that location and feeding behavior are just two of the aforementioned factors that could influence this interaction.
+
+
+
+
+
+
+
+
+

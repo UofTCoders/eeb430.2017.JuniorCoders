@@ -1,0 +1,181 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(plotly)
+```
+
+```{r}
+Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
+
+```
+
+```{r}
+colnames(Pred) <- gsub(" ", "_", colnames(Pred))
+
+Pred <- Pred %>% 
+    mutate(Specific_habitat=gsub("Coastal bay", "Coastal Bay", Specific_habitat)) %>% 
+      mutate(Specific_habitat=gsub("shelf", "Shelf", Specific_habitat))
+
+species_name <- Pred %>% 
+  group_by(Predator_common_name, Predator) %>% 
+  tally() %>% 
+  filter(n > 1000) %>% 
+  arrange(desc(n)) %>% 
+  .$Predator_common_name
+
+c_species <- Pred %>% 
+  filter(Predator_common_name %in% species_name)
+```
+
+
+
+
+```{r}
+Pred %>% 
+  filter(Depth <500) %>% 
+  ggplot(aes(x= Mean_annual_temp, y = Predator_mass))+
+  geom_point()+
+  geom_smooth(method = "glm")
+
+
+```
+
+
+```{r}
+
+Pred %>% 
+    group_by(Predator) %>%
+  filter(Predator_lifestage == "adult") %>% 
+  ggplot(aes(x=Predator, y = Predator_mass))+
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+#ggsave("filename2.jpg")
+#ggsave("filename2.jpg", width = 200, height = 200 units = "cm")
+
+
+Pred %>% 
+  ggplot(aes(x=log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat))+
+  geom_point()+
+  geom_smooth(method = "glm")
+
+```
+```{r}
+Pred %>%
+  filter(Depth < 1000) %>% 
+  ggplot(aes(x = Prey_mass, y = Predator_mass))+
+  geom_point()+
+  geom_smooth()
+
+Pred
+  
+```
+
+
+```{r}
+c_species %>% 
+  group_by(Prey) %>% 
+  #tally(n_distinct(Prey)) 
+  ggplot(aes(x=Prey, y=Predator_mass))+
+  geom_point()+
+ geom_smooth(method = "glm")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+c_species %>% 
+  group_by(Specific_habitat) %>% 
+  #tally(n_distinct(Prey)) 
+  ggplot(aes(x=Specific_habitat, y=Mean_PP)) +
+  geom_point() +
+ geom_smooth() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+
+```
+
+
+
+
+```{r}
+Pred %>% 
+  group_by(Predator_common_name, Predator) %>% 
+  tally() %>% 
+  filter(n<1000)
+```
+
+```{r}
+species_name <- Pred %>% 
+  group_by(Predator_common_name, Predator) %>% 
+  tally() %>% 
+  filter(n > 1000) %>% 
+  arrange(desc(n)) %>% 
+  .$Predator_common_name
+
+c_species <- Pred %>% 
+  filter(Predator_common_name %in% species_name)
+
+```
+
+```{r}
+
+c_species <- Pred %>% 
+  filter(Predator_common_name %in% species_name)
+
+c_species %>% 
+  ggplot(aes(x=Mean_PP, y = Predator_mass))+
+  geom_point()+
+  geom_smooth(method = "glm")
+
+c_species %>% 
+  ggplot(aes(x=Depth, y = Predator_mass))+
+  geom_point()+
+  geom_smooth(method = "glm")
+
+c_species %>% 
+    ggplot(aes(x = Prey_mass, y = Predator_mass))+
+  geom_point()+
+  geom_smooth()
+
+c_species %>% 
+    ggplot(aes(x = Prey_common_name, y = Predator_mass))+
+  geom_point()+
+  geom_smooth() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+c_species %>% 
+    ggplot(aes(x = log(Prey_length), y =log(Prey_mass)))+
+  geom_point()+
+  geom_smooth(method = "glm") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  facet_wrap(~Prey_common_name)
+
+```
+
+
+```{r}
+c_species %>% 
+  ggplot(aes(x=log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat))+
+  geom_point()+
+  geom_smooth(method = "glm")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
