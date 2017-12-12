@@ -33,7 +33,7 @@ jrc_theme <- function() {
 
 ```{r,warning=FALSE, include=FALSE}
 
-## Packages
+
 
 library(tidyverse)
 library(dplyr)
@@ -50,7 +50,7 @@ library(plotly)
 
 ```{r,warning=FALSE, include=FALSE}
 
-## Modifying the data so that everyone can use it
+
 
 Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
 colnames(Pred) <- gsub(" ", "_", colnames(Pred))
