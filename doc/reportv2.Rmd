@@ -231,31 +231,6 @@ fitdata11 %>%
 
 
 
-```{r,warning=FALSE, include=FALSE}
-model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
-```
-
-
-
-```{r,warning=FALSE, echo=FALSE}
-
-kable(model.sel(lm9, lm10, lm11,null, lm12, rank = AIC))
-```
-
-*Table.1: Results of our models*
-
-
-```{r,warning=FALSE, echo=FALSE}
-
-kable(anova(  lm9, lm10, lm11,null, lm12))
-```
-
-
-# Discussion
-
-
-
-
 
 # Software
 The software we used to create this document is the statistical Analysis program R.  The packages used to create this data are:
