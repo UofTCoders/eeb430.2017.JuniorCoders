@@ -24,7 +24,8 @@ jrc_theme <- function() {
         panel.background = element_blank(),
         panel.grid.major = element_line(colour = "grey91"),
         panel.grid.minor = element_blank(),
-        legend.position = "bottom")
+        legend.position = "right",
+        axis.text.x = element_text(angle = 45,hjust = 1))
 }
 
 ```
@@ -43,6 +44,7 @@ library(lme4)
 library(MuMIn)
 library(knitr)
 library(plotly)
+
 ```
 
 
@@ -83,7 +85,7 @@ From the *Marine predator and prey body sizes* dataset created by Barnes et al (
 
  pred_prey_dataset %>% 
      ggplot(aes(x = log(Predator_mass), y = log(Prey_mass))) +
-     geom_hex(bins = 50) +
+     geom_hex(bin=50) +
      geom_smooth(method = "glm", colour = "Red") +
     xlab("Log (Predator Mass)")+
     ylab("Log (Prey Mass)")+
@@ -92,6 +94,25 @@ From the *Marine predator and prey body sizes* dataset created by Barnes et al (
 
 ```
 
+
+
+```{r,echo=FALSE,fig.width=8, fig.height=6,warning=FALSE,fig.cap=paste("Fig.1: *Shows the log of Predator mass vs log of Prey Mass*")}
+
+Pred %>% 
+     group_by(Specific_habitat) %>% 
+    tally()%>% 
+      ggplot(aes(x=Specific_habitat, y=n, fill = Specific_habitat))+
+     geom_bar(stat = "identity")+
+     jrc_theme()+
+    xlab("Specific Habitat")+
+    ylab("Number of Samples")+
+    labs(color='Specific Habitat')+
+    scale_fill_discrete(name = "Specific Habitat")
+   
+
+
+
+```
 
 
 ```{r, fig.width=9, fig.height=5, echo=FALSE,fig.cap=paste("Fig.2: *Shows the log of Predator mass vs log of Prey Mass by Specific Habitat*")}
@@ -169,17 +190,18 @@ nulllm11 <- bind_cols(fitted_lm11, fitted_null)
 
 
 
-```{r, fig.width=11, fig.height=5, warning=FALSE, echo=FALSE}
+```{r, fig.width=8, fig.height=6, warning=FALSE, echo=FALSE}
 
-    pho2 <- ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
+    inter<- ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
     geom_line(aes(colour = Specific_habitat))+facet_grid(~ Type_of_feeding_interaction) + null_line +
     jrc_theme()+
     xlab("Log (Predator Mass)")+
-    labs(colour = "Specific Habitat")
+    labs(colour = "Specific Habitat")+
+    jrc_theme()
     
     
 
-ggplotly(pho2)
+ggplotly(inter)
    
 ```
 
@@ -240,6 +262,7 @@ kable(model.sel(lm9, lm10, lm11,null, lm12, rank = AIC))
 
 
 ```{r,warning=FALSE, echo=FALSE}
+
 kable(anova(  lm9, lm10, lm11,null, lm12))
 ```
 
