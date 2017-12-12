@@ -253,7 +253,7 @@ inter <- ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
 interact <- ggplotly(inter)
 ```
 
-```{r, echo=FALSE, fig.cap= paste("Fig.5: *Fitted Linear Model*")}
+```{r, echo=FALSE, fig.cap= paste("Fig.5: *Fitted Linear Model*.(Interactive)")}
 
 interact
 ```
@@ -281,7 +281,7 @@ plot <- ggplotly(colourplz)
 ```
 
 
-```{r, echo=FALSE, fig.cap= paste("Fig.6: *Slope for all Linear Models*")}
+```{r, echo=FALSE, fig.cap= paste("Fig.6: *Slope for all Linear Models. (Interactive)*")}
 
 plot
 ```
