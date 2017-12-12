@@ -80,7 +80,7 @@ Predator-prey body size relationships have been generally suggested to be positi
 
 ### Data Description
 
-Data was obtained from the “Marine predator and prey body sizes” created by Barnes et al. (2008). This dataset was generated from existint data from 17 different international institutions. As such, we have data from the global locations from which organisms were sampled which includes the type of habitat and various environmental measurements. Our variables of interest were selected to be: specific habitat location and feeding behaviour. We can generalize the feeding behaviours of the predators into two categories: narrow-range feeders (i.e. piscivorous, planktivorous; they eat only one type of prey) and broad-range feeders (i.e. predacious; they eat a variety of different types of prey). According to the dataset, predator-prey relationships were determined by examining the gut content of predators for prey. This may have introduced a lot of error in prey mass measurements. For this reason, we chose prey mass to be dependent on predator mass. We excluded data from insectivorous and predacious/piscivorous predators as they were represented in only one habitat each (the other feeding behaviours were represented in at least 2 habitats). 
+Data was obtained from the *Marine predator and prey body sizes* created by Barnes *et al.* (2008). This dataset was generated from existint data from 17 different international institutions. As such, we have data from the global locations from which organisms were sampled which includes the type of habitat and various environmental measurements. Our variables of interest were selected to be: specific habitat location and feeding behaviour. We can generalize the feeding behaviours of the predators into two categories: narrow-range feeders (i.e. piscivorous, planktivorous; they eat only one type of prey) and broad-range feeders (i.e. predacious; they eat a variety of different types of prey). According to the dataset, predator-prey relationships were determined by examining the gut content of predators for prey. This may have introduced a lot of error in prey mass measurements. For this reason, we chose prey mass to be dependent on predator mass. We excluded data from insectivorous and predacious/piscivorous predators as they were represented in only one habitat each (the other feeding behaviours were represented in at least 2 habitats). 
 
 
 ### Data Analysis
@@ -218,7 +218,7 @@ inter <- ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
 interact <- ggplotly(inter)
 ```
 
-```{r, echo=FALSE, fig.cap= paste("Fig.5: *Fitted Linear Model*. (Interactive)")}
+```{r, echo=FALSE, fig.cap= paste("Fig.5: *Fitted Linear Model. (Interactive)*")}
 interact
 ```
 
@@ -260,7 +260,7 @@ A third pattern is also possible but involves limitations of the dataset. It is 
 
 # Conclusion
 
-In short, we can conclude that the relationship between prey and predator size can be affected by habitat and the interaction between habitat and predators’ feeding type, and interpreting the relationship by general trend may lead to Simpsons’ paradox. There might be some other potential parameters to help predict the relationship, for example, surface temperature, depth, primary productivity, etc. However, due to the limitation of our data set, we can not make a further conclusion. The sample size for each subgroup is not even, which might affect our result as well. In further, if a larger and more informative dataset can be made, it will be very helpful to generate a better model.
+In short, we can conclude that the relationship between prey and predator size can be affected by specific habitat and the interaction between habitat and predator feeding type, and interpreting the relationship by general trend may lead to Simpsons’ paradox. There might be some other potential parameters to help predict the relationship, for example, surface temperature, depth, primary productivity, etc. However, due to the limitation of our data set,we can make no further conclusions to that effect. The sample size for each subgroup is not equal, which might affect our result as well. Furthermore, if a larger and more informative dataset can be made, it will be very helpful to generate a better model.
 
 
 
