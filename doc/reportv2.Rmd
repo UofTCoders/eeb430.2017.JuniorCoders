@@ -29,7 +29,7 @@ jrc_theme <- function() {
         plot.title = element_text(hjust = 0.5),
         panel.border = element_rect(fill = NA),
         axis.line = element_line(),
-        #text = element_text(size = 11, family = "Times"),
+        text = element_text(size = 11, family = "Times"),
         panel.background = element_blank(),
         panel.grid.major = element_line(colour = "grey91"),
         panel.grid.minor = element_blank(),
@@ -112,6 +112,20 @@ pred_prey_dataset %>%
 ```
 
 
+```{r}
+Pred %>% 
+     group_by(Specific_habitat) %>% 
+    tally()%>% 
+      ggplot(aes(x=Specific_habitat, y=n, fill = Specific_habitat))+
+     geom_bar(stat = "identity")+
+     jrc_theme()+
+    xlab("Specific Habitat")+
+    ylab("Number of Samples")+
+    labs(color='Specific Habitat')+
+    scale_fill_discrete(name = "Specific Habitat")
+   
+
+```
 
 
 ```{r, fig.width=8, fig.height=6, echo=FALSE,fig.cap=paste("Fig.4")}
