@@ -4,7 +4,9 @@ title: "R Notebook"
 
 ```{r}
 library(tidyverse)
+library(dplyr)
 library(readxl)
+library(broom)
 ```
 
 ```{r}
@@ -17,11 +19,182 @@ colnames(Pred) <- gsub(" ", "_", colnames(Pred))
 ```
 
 
+```{r}
+Pred 
 
+Pred$Latitude <- Pred$Latitude %>% 
+    sub("º", "d",.)
+
+library(sp)
+Pred$Latitude <- as.numeric(char2dms(Pred$Latitude))
+
+```
+# pred_abundance dataset 
+
+This dataset is a subset of the marine dataset. What does it include?: 
+- Predator observations that are larger than 800
+- Prey observations that are between 50 and 1000
+- observations that are above 1000m depth
+```{r}
+pred_abundance <- Pred %>% 
+    group_by(Predator) %>% 
+    tally() %>% 
+    arrange(desc(n)) %>% 
+    filter(n > 800)
+pred_abundance
+
+prey_abundance <- Pred %>% 
+   group_by(Prey) %>% 
+    tally() %>% 
+    arrange(desc(n)) %>% 
+    filter(n > 50 & n < 3000)
+prey_abundance
+
+pred_prey_dataset <- Pred %>%
+    filter(Predator %in% pred_abundance$Predator) %>%
+    filter(Prey %in% prey_abundance$Prey) %>%
+    filter(Depth < 1000)# %>%
+    #filter(Type_of_feeding_interaction == 'piscivorous') #| Type_of_feeding_interaction == 'planktivorous')
+    
+pred_prey_dataset
+
+
+```
+
+# log predator mass vs log prey mass
+
+As prey mass increases so does predator mass. When plotted this way, the data clusters into 4-5 blobs -- it's possible that there might be something underlying this pattern. 
 
 ```{r}
-Pred
+pred_prey_dataset %>% 
+    ggplot(aes(x = Depth, y = Mean_PP)) +
+    geom_point()
+
+
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass))) +
+    geom_point() +
+    geom_smooth(method = "glm")
+  
+
 ```
+
+# Colour by specific habitat
+
+Same plot, but now we colour data based on what habitat the predator-prey interaction is. 
+It appears that habitat predicts the observed pattern... so what is it about habitat that underlies this pattern that as prey size increases so does predator size?
+```{r, fig.width=7, fig.height=4}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point() 
+```
+# Colour by feeding interaction
+
+Same plot, only we colour the data by the kind of feeding pattern the predator exhibits. 
+It looks like this could also explain the data, although maybe not as strongly as habitat -- you see that predacious feeding spans the extremes, and picsivorous feeding does too. But these are really general feeding types... are feeding types found in more habitats than in others? 
+
+```{r, fig.width=7, fig.height=4}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Type_of_feeding_interaction)) +
+    geom_point() 
+```
+
+# Predacious data
+
+```{r, fig.width=7, fig.height=4}
+
+predacious <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == 'predacious') %>% 
+    select(Predator_mass, Prey_mass, Type_of_feeding_interaction, Prey, Specific_habitat) 
+   
+predacious %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Prey)) +
+    geom_point()
+
+# looking at the predacious data, there's two extremes:
+# squid prey seem to make predator prey really big
+# on the other hand, copepods and invertebrates appear to make predators really small
+# an energy transfer issue? 
+
+predacious %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point() 
+
+# this might just be a function of the ice zone having a lot of observations, but being in the ice zone or nearshore makes you small, while living in the shelf makes you large
+
+```
+
+# Planktivorous data
+ 
+```{r}
+planktivorous <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == 'planktivorous') %>% 
+    select(Predator_mass, Prey_mass, Type_of_feeding_interaction, Prey, Specific_habitat)
+
+planktivorous %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Prey)) +
+    geom_point() 
+
+planktivorous %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point()
+
+# all planktivorous species are found in the ice zone, and they're all really small
+# this is probably driving that pattern against Bergmann's rule 
+
+```
+
+# Piscivorous data
+
+<<<<<<< HEAD:doc/Pred_farhan.Rmd
+=======
+```{r}
+piscivorous <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction == 'piscivorous') %>% 
+    select(Predator_mass, Prey_mass, Type_of_feeding_interaction, Prey, Specific_habitat) 
+
+piscivorous %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Prey)) +
+    geom_point()
+
+# You see some grouping here, it's a little more spaced out than what you saw for predacious, but there is definitely some grouping
+
+piscivorous%>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Specific_habitat)) +
+    geom_point()
+
+# Specific habitat is also a really good indicator for prey size - predator size
+```
+
+# Facet wrapping
+
+```{r, fig.width=15, fig.height=10}
+pred_prey_dataset %>% 
+    ggplot(aes(x = log(Prey_mass), y = log(Predator_mass), colour = Prey)) +
+    facet_grid(Specific_habitat ~ Type_of_feeding_interaction) +
+    geom_point() +
+    geom_smooth(method = 'glm', colour = 'black')
+```
+
+
+
+
+
+
+# Let's check out prey mass
+
+```{r}
+fit1 <-  glm(Prey_mass ~ Specific_habitat, data = pred_prey_dataset, family = gaussian)
+tidy(fit1)
+
+```
+>>>>>>> 2556d23e52845cb09df46608aef04fca71739f95:doc/Pred.Rmd
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,52 @@
+---
+title: "Code for Figures and Tables"
+output: html_notebook
+---
+
+```{r}
+Pred
+```
+
+# Figure 1
+A plot of sample sizes per habitat (geom_bar).
+
+# Figure 2
+This figure will show the basic prey mass vs predator mass relationship. Fig. 1a will show this relationship coloured by habitat, while Fig. 1b will show this relationship coloured by feeding type and facetted by habitat. These are the two predictor variables we will be further exploring.
+
+```{r}
+# 2a
+Pred %>%
+    ggplot(aes(x = log(Predator_mass),
+               y = log(Prey_mass),
+               colour = Specific_habitat)) +
+    geom_point(size = 0.4, alpha = 0.4) 
+```
+
+
+```{r}
+# Fig. 2b
+Pred %>%
+    ggplot(aes(x = log(Predator_mass),
+               y = log(Prey_mass),
+               colour = Type_of_feeding_interaction)) +
+    geom_point(size = 0.01) +
+    facet_wrap(~ Specific_habitat) +
+    geom_smooth(method = 'glm', colour = 'black', size = 0.5) 
+    
+```
+
+# Figure 3
+This figure will show a world map of the locations sampled in this dataset, coloured by their Specific habitat. This colour will match habitat colours used in Figure 1 for consistency. 
+
+# Table 1
+A table of models and model descriptions.
+
+# Table 2
+A table of AIC outputs with asterisks beside the best models. 
+
+# Figure 4
+This figure will show model results.
+
+# Figure 5
+
+
