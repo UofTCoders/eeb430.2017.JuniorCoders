@@ -1,0 +1,306 @@
+---
+title: "The Effects of Habitat and Feeding Behavior on Predatory Prey Body Mass Relationships"
+author: "Leila Krichel, Rui Zhou, Farhan Majumder, Jeffrey Nguyen"
+date: "December 12, 2017"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 4
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+# Abstract
+
+Body size is an easily measured trait that has pervading effects for an ecosystem's structure and function because it governs ecological interactions, population abundances and distributions, and trophic exchanges. Yet, it is still debated what factors drive body size relationships in predator-prey interactions. It is often assumed that predator-prey size relationships are positively correlated in such a way where predators are usually larger than their prey. Here, we argue that predator-prey body size relationship are mediated by key predictors that may be correlated with certain habitat types, and which may not consistently produce positive associations. Further, we also ask whether a predator's feeding behaviour influences size relationships. Feeding behaviours determine the amount of resources that can be exploited from an environment, and is mediated by physiological and morphological constraints that control the amount of energy that can be allocated to body size. We explore these questions using a dataset assembled by Barnes *et al.* (2008), which summarizes marine predator-prey relationships in terms of specific interactions, mass, habitat sampled, and feeding type. Overall, we hope to determine the distribution predator-prey body size relationships across marine habitats and how it varies with feeding behaviours. 
+
+
+```{r,warning=FALSE, include=FALSE}
+jrc_theme <- function() {
+    theme(
+        plot.title = element_text(hjust = 0.5),
+        panel.border = element_rect(fill = NA),
+        axis.line = element_line(),
+        text = element_text(size = 11, family = "Times"),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(colour = "grey91"),
+        panel.grid.minor = element_blank(),
+        legend.position = "right",
+        axis.text.x = element_text(angle = 45,hjust = 1))
+}
+```
+
+
+```{r,warning=FALSE, include=FALSE}
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(broom)
+library(ggplot2)
+library(lme4)
+library(MuMIn)
+library(knitr)
+library(plotly)
+```
+
+
+```{r,warning=FALSE, include=FALSE}
+Pred <- read_csv("../data/predator.csv.gz",na = c("","n/a","NA"),col_types = cols(`SD PP`=col_double()))
+colnames(Pred) <- gsub(" ", "_", colnames(Pred))
+
+Pred <- Pred %>%
+mutate(Specific_habitat=gsub("Coastal bay", "Coastal Bay", Specific_habitat)) %>%
+mutate(Specific_habitat=gsub("shelf", "Shelf", Specific_habitat))
+
+pred_prey_dataset <- Pred %>%
+    group_by(Predator_common_name, 
+             Prey_common_name, 
+             Specific_habitat, 
+             Type_of_feeding_interaction, 
+             Predator_lifestage, 
+             Mean_PP,
+             Mean_annual_temp,
+             Depth) #%>%
+```
+
+# Background and Rationale
+
+Arguably, an organism's body size is its most important trait. Because demographic and physiological rates are often correlated with body size, this may have profound effects on ecological interactions, the flow of energy across food webs, and the dynamics and distributions of populations (Brown *et al.*, 2004; Woodward *et al.*, 2005). Furthermore, size introduces feeding constraints, such that the size of the resource will influence who can consume it, which affects the consumer's feeding behaviour and selection of prey (Pape and Bonhommeau, 2015). This may ultimately create size structure in a food web (Brose *et al.*, 2006). Consequently, a simple metric such as body size may encompass complex biological information about an ecosystem's function and structure, thus warranting further investigation. 
+
+Body size differences are particularly apparent in predator-prey interactions. One study exploring food webs in natural communities found that in 90% of cases, predators were larger than their prey (Cohen *et al.*, 1993). There are a number of hypotheses attempting to explain this relationship. Most frequently, it is attributed to the effect of temperature and resource availability. In ectotherms, body size and temperature have been shown to negatively correlate, a pattern known as the temperature-size rule (Gibert and DeLong, 2014). Importantly, temperature also affects a resource availability because it determines an environment's productivity (Yom-Tov and Greffen, 2011). With a focus on marine and terrestrial environments, Tucker and Rogers (2014) determined that the differences in size structure in mammalian food webs could be explained by productivity. They demonstrated that marine body size relationships were on average greater than those found in terrestrial ecosystems, ascribing this to the fact that resources are generally more abundant and less structurally complex in marine environments. Here, increased resource availability allowed for more energy flow across food webs to produce larger body sizes in mammals.   
+
+Feeding constraints, determined by a predator's feeding behaviour, could affect the amount of resources it can actually exploit from the environment. Even if resources are abundant, an organism's morphological constraints may limit how much energy it can intake, thus constraining size structure and resulting in small body size differences between predators and prey (Arim *et al.* 2007). On the other hand, pelagic ecosystems have relatively low productivity yet support predator-prey relationships with high size structure. In cases where energy flows from microscopic phytoplankton to large predatory fish, large differences in body size can still be obtained depending on a predator's feeding behaviour (Brose *et al.* 2006; McGarvey *et al.* 2016). 
+
+# Research Objectives and Hypothesis
+
+Predator-prey body size relationships have been generally suggested to be positively correlated, yet empirical evidence suggests that the magnitude and direction of these relationships may vary. This suggests that there are likely various factors interacting to influence body size relationships. Using a dataset compiled by Barnes *et al.* (2008), we hope to determine what underlying factors best predict predator-prey body size relationships within various marine ecosystems. In particular, we will determine the role of marine habitats and feeding behaviours in influencing the strength of this interaction. 
+
+# Methods
+
+### Data Description
+
+Data was obtained from the *Marine predator and prey body sizes* created by Barnes *et al.* (2008). This dataset was generated from existint data from 17 different international institutions. As such, we have data from the global locations from which organisms were sampled which includes the type of habitat and various environmental measurements. Our variables of interest were selected to be: specific habitat location and feeding behaviour. We can generalize the feeding behaviours of the predators into two categories: narrow-range feeders (i.e. piscivorous, planktivorous; they eat only one type of prey) and broad-range feeders (i.e. predacious; they eat a variety of different types of prey). According to the dataset, predator-prey relationships were determined by examining the gut content of predators for prey. This may have introduced a lot of error in prey mass measurements. For this reason, we chose prey mass to be dependent on predator mass. We excluded data from insectivorous and predacious/piscivorous predators as they were represented in only one habitat each (the other feeding behaviours were represented in at least 2 habitats). 
+
+
+### Data Analysis
+
+Importing the dataset into R (Version 1.0.153), we used the package ggplot2 to visualize the patterns and trend in the aforementioned variables. We log-transformed predator and prey mass before the analysis to linearize the relationship. The sample size for feeding behaviours are as such: piscivorous, n = 20775; planktivorous, n = 1569; predacious, n = 12394. The sample sizes for habitat is visualized in fig. 4. To determine which variables are affecting the slope of predator-prey mass relations, we generated several models. Because of potential biases in our data introduced by nonindependent data, we used a linear mixed effects model to determine how the variables specific habitat and feeding behaviour influence the slope of predator-prey body size relationships. The mixed effects model allows us to treat habitat and feeding behaviour as random effects, which takes into account that these two variables have inherent dependencies. The first model (null) was a control model, where prey mass was only affected by predator mass. The second model (lm9) incorporates the effect of feeding-type on the intercept of the predator-prey mass. Third model (lm10) incorporates the effect of feeding behaviour on the intercept and slope of the predator-prey mass relationship. The fourth model (lm11) incorporates the effect of specific habitat on the intercept and slope of the predator-prey mass relationship. The fifth model (lm 12) incorporates the additive effects of both specific habitat and feeding behaviour on the slope and intercept of the predator-prey mass relationship. We selected the most plausible models by conducting Aikake's information criteria (AIC). We then determined whether models were significantly more plausible using an ANOVA.
+
+# Results
+
+With accordance to the abstract provided by the authors of the dataset, we were able to confirm their finding that there was a relationship between the log of predator and prey mass, visualized by a linear regression (Fig.1).In trying to understand the causal effects of the interaction, the previous plot was facetted to display the different specific habitats from where the data was sampled (Fig.2). We were able to note that there was a clear arrangement of the various habitats on the plot; different sizes of organisms were found in the different habitats.   
+
+```{r,echo=FALSE,fig.width=7, fig.height=6,warning=FALSE,fig.cap=paste("Fig.1: *The log of Predator mass vs log of Prey Mass*")}
+ pred_prey_dataset %>% 
+     ggplot(aes(x = log(Predator_mass), y = log(Prey_mass))) +
+     geom_hex(bins = 50) +
+     geom_smooth(method = "glm", colour = "Red") +
+     xlab("Log (Predator Mass)")+
+    ylab("Log (Prey Mass)")+
+    jrc_theme()
+```
+
+
+```{r, fig.width=8, fig.height=5, echo=FALSE,fig.cap=paste("Fig.2: *The log of Predator mass vs log of Prey Mass by Specific Habitat*")}
+pred_prey_dataset %>%
+    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass),colour = Specific_habitat)) +
+    geom_point() +
+    xlab("Log (Predator Mass)") +
+    ylab("Log (Prey Mass)") +
+    labs(color = 'Specific Habitat') +
+    jrc_theme()
+```
+
+To rationalize why there is a division of predator sizes between the different habitats, a potential hypothesis based on available data is that there is a difference of available prey at the various locations. Feeding behaviour would dictate what types of prey the predators consumed. The third graph visualizes the effects of both variables on the interaction of predator and prey biomass (Fig.3). Three feeding behaviours were chosen due to their representation in more than one habitat: piscivorous, planktivorous, and predacious; categorizing the former two as specialist-feeders as they only eat one type of prey (fish and plankton, respectively) and the latter as a broad-range-feeders as they eat different types of prey. There is an interesting pattern that emerges: in general, each plot – which is a combination of effects of the habitat of sampling and feeding behaviours of the predators in the habitat – has it’s own unique slope which visualizes the relationship of predator-prey body mass. Also we realized that there is different composition of predator feeding behaviours in each habitat; some have a few types of feeding interactions, and others are dominated by one type of feeding interaction. Before we proceeded to go into statistical modelling, we realized that not every habitat sampled had an equal representation in the data. In order to interpret further results with more clarity, it was best to understand the number or organisms sampled from each location. A tally of habitats sampled indicate that there were three areas of less than 100 individuals (Coastal Greenland, Inshore, and Nearshore Waters); these areas would have little influence in the data, whereas Pelagic had above 15,000 organisms sampled; will have heavy influence in the data (Fig.4).
+
+
+```{r, fig.width=8, fig.height=6, echo=FALSE,fig.cap=paste("Fig.3:*The log of Predator mass vs log of Prey mass in each habitat and coloured by Type of Feeding Interaction*")}
+Pred %>%
+    filter(Type_of_feeding_interaction != "predacious/piscivorous" & Type_of_feeding_interaction != "insectivorous") %>% 
+    ggplot(aes(x = log(Predator_mass), y = log(Prey_mass), colour = Type_of_feeding_interaction)) +
+    geom_point(size = 1, alpha = 0.5) +
+    facet_wrap(~ Specific_habitat) +
+    geom_smooth(method = 'glm', colour = 'black', size = 0.5) +
+      xlab("Log (Predator Mass)")+
+    ylab("Log (Prey Mass)")+
+    labs(color='Type of Feeding Interaction') +
+    jrc_theme()
+```
+
+
+```{r,echo=FALSE,fig.width=8, fig.height=6,warning=FALSE,fig.cap=paste("Fig.4: *The number of individuals sampled in each habitat*")}
+Pred %>% 
+     group_by(Specific_habitat) %>% 
+    tally()%>% 
+      ggplot(aes(x=Specific_habitat, y=n, fill = Specific_habitat))+
+     geom_bar(stat = "identity")+
+     jrc_theme()+
+    xlab("Specific Habitat")+
+    ylab("Number of Samples")+
+    labs(color='Specific Habitat')+
+    scale_fill_discrete(name = "Specific Habitat")
+```
+
+
+
+The next step was to understand whether the affects of the variables were statistically significant to influence the interaction; is it the effect of one of the two variables highlighted above, or a combination of the two. To do so, several mixed-effects models were used. From the 5 models that were created, the most influential model pointed to a combined effect of location and feeding behaviour: Models 11 and 12. Specifically, based on the results, model 11 and model 12 appear to best explain predator-prey body size relationships in marine ecosystems. Both of these models displayed high percentage chance to be the most likely model (lm11 weight = 0.31 and lm12 =0.69) when comparing to the rest (Table 1). The next was to determine which model between the two is more preferred. We concluded that while model 12 had more had more explanatory power, it was not significantly better than model 11 (AIC was less than 2; with a p value of 0.077). Furthermore, model 11 was significantly better than model 10 (p value was smaller than 2e-16), which instead assumes different slopes and intercepts for each feeding behaviour, plus an interaction with habitat (Table 2). Ergo, the best models indicate that the slope and intercept of the predator-prey mass interaction line-of-best-fit in influenced by a combined effects of habitat and feeding interaction. Model 12 is the best. 
+
+```{r,warning=FALSE, include=FALSE}
+filtered_dataset <- pred_prey_dataset %>% 
+    filter(Type_of_feeding_interaction != 'insectivorous' & Type_of_feeding_interaction != 'predacious/piscivorous') %>% 
+    filter(Specific_habitat != 'Coastal, SW & SE Greenland' & Specific_habitat != 'inshore' & Specific_habitat != 'Nearshore waters')
+
+
+lm9 <- lmer(log(Prey_mass) ~ log(Predator_mass) + 
+            (1 | Type_of_feeding_interaction) + 
+            (1 | Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+
+lm10 <- lmer(log(Prey_mass) ~ log(Predator_mass) + 
+            (1 + log(Predator_mass) | Type_of_feeding_interaction) + 
+            (1 + log(Predator_mass)| Type_of_feeding_interaction:Specific_habitat), data = filtered_dataset)
+
+lm11 <- lmer(log(Prey_mass) ~ log(Predator_mass) + 
+            (1 + log(Predator_mass) | Specific_habitat) + 
+            (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction), data = filtered_dataset)
+
+lm12 <- lmer(log(Prey_mass) ~ log(Predator_mass) + 
+             (1 + log(Predator_mass) | Specific_habitat) + 
+              (1 + log(Predator_mass)| Specific_habitat:Type_of_feeding_interaction) + 
+             (1 + log(Predator_mass)| Type_of_feeding_interaction), data = filtered_dataset)
+
+fitted_lm11 <- augment(lm11) 
+
+null <- glm(log(Prey_mass) ~ log(Predator_mass),data = filtered_dataset) 
+
+fitted_null <- augment(null) %>% 
+    rename(.fitted_null = .fitted)
+
+names(fitted_null)
+
+null_line <- geom_line(aes(x = log.Predator_mass., y = .fitted_null))
+
+nulllm11 <- bind_cols(fitted_lm11, fitted_null)
+
+
+model.sel(lm9, lm10, lm11,null, lm12, rank = AIC)
+```
+
+```{r,warning=FALSE, echo=FALSE}
+kable(model.sel(lm9, lm10, lm11,null, lm12, rank = AIC))
+```
+
+*Table 1: AIC for models*
+
+
+```{r, include = FALSE}
+table <- kable(anova(lm9, lm10, lm11, lm12,null))
+```
+
+```{r, echo=FALSE}
+table
+```
+
+*Table 2: ANOVA for models*
+
+As described above, under the chosen model, each combination of feeding behaviour and associated specific habitats influence the y-intercept and slope of the predator-prey mass interactions. In general, when we compare the three feeding behaviours, there seems to be a visible difference of the intercept, with the slope for piscivorous being the highest (Fig.5). On the other hand, despite the changes in the habitat and feeding behaviour, a majority of the results show a shallow slope for the predator-prey mass interaction, in relation to the general-trend line visualized by the black bar. Shallow slopes indicate relationships that are closer to a neutral effect, which may assume a loose correlation between predator-prey mass ratios (Fig.6). It is also interesting to note that comparing the variance of the interaction relationships, the broad-ration-feeders show the widest range compared to all of them. It incorporates both the lowest and highest value of slope, compared to the narrower ranges of slope data for the specialist-predators.
+
+```{r, fig.width=11, fig.height=5, warning=FALSE, include=FALSE}
+inter <- ggplot(nulllm11, aes(x = log.Predator_mass., y = .fitted)) +
+    geom_line(aes(colour = Specific_habitat)) + facet_grid( ~ Type_of_feeding_interaction) + 
+    null_line +
+    jrc_theme() +
+    xlab("Log (Predator Mass)") +
+    ylab("Log (Prey Mass)") +
+    labs(colour = "Specific Habitat") +
+    jrc_theme()
+
+interact <- ggplotly(inter)
+```
+
+```{r, echo=FALSE, fig.cap= paste("Fig.5: *Fitted Linear Model. (Interactive)*")}
+interact
+```
+
+```{r,warning=FALSE, include=FALSE}
+fitdata11 <- ranef(lm11)[[1]] %>% 
+    rownames_to_column()%>% as_data_frame() %>% 
+    separate(rowname, into = c("habitat","feeding_type"), sep = ":") 
+
+colnames(fitdata11)[4] <- c("slope")
+
+colourplz <- fitdata11 %>% 
+    ggplot(aes(x = feeding_type, y = fixef(lm11)[[2]] + 
+    slope,color = habitat))+
+    geom_point() + 
+    geom_hline(yintercept = tidy(null)[2,2])+
+    xlab("Feeding Type")+
+    ylab("Log (Prey Mass)")+
+    labs(colour = "Specific Habitat")
+    
+plot <- ggplotly(colourplz)
+```
+
+
+```{r, echo=FALSE, fig.cap= paste("Fig.6: *Slope for all Linear Models. (Interactive)*")}
+plot
+```
+
+
+# Discussion
+
+We analyzed predator-prey body size relationships in various marine ecosystems that spanned different latitudes and depths. The magnitude and direction of the relationships seemed to be depend on habitat and its interaction with feeding behaviour (Table 1, lm11). We assumed that different habitats correlated with certain environmental variables, allowing us to use habitat as a proxy for the environmental effect on body size relationships. We took into account the feeding behaviour of predators, as morphological and physiological constraints on a predator's feeding have been shown to be important in determining what energy predator's can actually exploit from their environment (Brose *et al.*, 2006; Arim *et al.*, 2007). 
+The differences in predator-prey body size relationships suggests that different environment's have different capacities to produce resources, which thus determines how much energy is allowed to flow between predators and prey. For example, we found that piscivorous feeders in the seasonal pack ice zone have a lower intercept than piscivorous feeders in the shelf (Fig.3). Assuming that piscivores require similar energy needs, this supports the prediction that habitats with low productivity hold less energy, and thus produce food webs in which predators and prey tend to be smaller (Barnes *et al.*, 2010).
+
+However, because habitat can encompass a wide range of variables, it was not possible to parse out exactly what variables were important in predicting predator-prey size relationships. This was due to the manner in which environmental data was collected in this dataset. For example, the average temperature for each environment only included sea surface temperature, which was obtained from an extrinsic source (Barnes *et al.*, 2008). As a result, the temperature variable does not take into account changes in temperature with depth. Thus, for samples that were observed deep in the water column, sea surface temperature would not have been informative as a predictive variable. The same logic can be applied to other variables such as the average primary productivity of an environment, which was also measured at sea surface.
+
+On the other hand, size differences in the seasonal pack ice zone and the shelf flip when the feeding behaviour of the predator is predacious (Fig.5). Here, it is observed that shelf has a much shallower slope than both the null model and the seasonal pack ice zone, suggesting food webs regulated by predacious feeders may be more size constrained, thus producing size relationships that do not differ significantly between predators and prey. This could be a function of two different patterns. First, this pattern could be driven by the temperature-size rule. This rule states that individuals in warm environments grow more quickly due to increased metabolic rates; consequently, they reach maturity earlier, but tend to be smaller (Gibert and DeLong, 2014). In this way, size structure could be smaller in warm habitats than in cold environments like the seasonal pack ice zone. Second, this pattern may also be generated by what predacious feeders consume versus what piscivorous feeders consume. Piscivores mainly consume fish, while predacious feeders eat a more 'generalized' diet of fish, plankton, and squid. It is possible that predators with more generalized diets may be less efficient in extracting energy from their resources as their adaptations are not specialized toward a certain prey. This could reflect a tradeoff: predators with generalized diets can eat a variety of prey in their environment, but do not outperform specialists in growth and survival (Berkström *et al.*, 2014). 
+
+A third pattern is also possible but involves limitations of the dataset. It is difficult to infer any general trend about the distribution and variation of predator-prey body size relationships across marine ecosystems and across feeding behaviours due to the dataset containing multiple incidences of nonindependent data. While the dataset contained over 30,000 entries, much of it represented nonindependent data, which may have substantially decreased the sample size. For instance, out of the whole dataset, 3581 samples were from the Albacore tuna. To account for nonindependence, we used a linear mixed effects model. Statistically, then, these samples represent a single unit -- instead of having 3581 samples, there is only 1 sample with 3581 values. As a result, this dataset was limited in what it could actually communicate in terms of how predator-prey body size relationships vary across marine habitats and feeding types. In Fig.3, the predacious subgroup in the shelf habitat has a negative correlation, suggesting that as prey become smaller, predators are becoming larger. Within the shelf habitat, there are 2022 samples, but only two populations are represented: the Atlantic bluefin tuna and the longfin squid. Because we accounted for nonindependence, the trend in the shelf environment is only being driven by these two populations, which statistically, amounts to two units. Evidently, a sample size of two is not enough for making any definitive conclusions about the shelf marine ecosystem, or about predator-prey body size relationships in the marine environment in general.
+
+# Conclusion
+
+In short, we can conclude that the relationship between prey and predator size can be affected by specific habitat and the interaction between habitat and predator feeding type, and interpreting the relationship by general trend may lead to Simpsons’ paradox. There might be some other potential parameters to help predict the relationship, for example, surface temperature, depth, primary productivity, etc. However, due to the limitation of our data set,we can make no further conclusions to that effect. The sample size for each subgroup is not equal, which might affect our result as well. Furthermore, if a larger and more informative dataset can be made, it will be very helpful to generate a better model.
+
+
+
+# Software
+The software we used to create this document is the statistical Analysis program R version 1.0.153.  The packages used to create this data are:
+
+1)  tidyverse
+2)  dplyer
+3)  readxl
+4)  broom
+5)  lme4
+6)  MuMIn
+7)  knitr
+8)  plotly
+
+
+# Literature Cited
+
+1) Arim, M. C. A. D., F. Bozinovic, and P. A. Marquet. 2007. *On the relationship between trophic position, body mass and temperature: reformulating the energy limitation hypothesis.* Oikos 116:1524–1530.
+
+2) Barnes, C. , et al 2008. *Predator and prey body sizes in marine food webs.* Ecology 89: 881.
+
+3)  Barnes, C., D. Maxwell, D. C. Reuman, and S. Jennings. 2010. *Global patterns in predator–prey size relationships reveal size dependency of trophic transfer efficiency.* Ecology 91:222–232.
+
+4)  Berkström, C., G. P. Jones, and M. I. Mccormick. 2014. *Trade-offs in the ecological versatility of juvenile wrasses: An experimental evaluation.* Journal of Experimental Marine Biology and Ecology 453:91–97.
+
+5)  Brose, U., Jonsson, T., Berlow, E.L., Warren, P., Banasek-Richter, C., Bersier, L.F. et al. (2006a). *Consumer-resource body-size relationships in natural food webs.* Ecology, 87, 2411–2417.
+
+6)  Brown, J. H., Gillooly, J. F., Allen, A. P., Savage, V. M., & West, G. B. (2004). *Toward a metabolic theory of ecology.* Ecology 85, 1771–1789.
+
+7)  Cohen, J. E., S. L. Pimm, P. Yodzis, and J. Saldana. 1993. *Body Sizes of Animal Predators and Animal Prey in Food Webs.* The Journal of Animal Ecology 62:67.
+
+8)  Gibert, J. P., and J. P. Delong. 2014. *Temperature alters food web body-size structure.* Biology Letters 10:20140473–20140473.
+
+9)  Mcgarvey, R., N. Dowling, and J. E. Cohen. 2016. *Longer Food Chains in Pelagic Ecosystems: Trophic Energetics of Animal Body Size and Metabolic Efficiency.* The American Naturalist 188:76–86.
+
+10)  Pape, O. L., and S. Bonhommeau. 2013. *The food limitation hypothesis for juvenile marine fish.* Fish and Fisheries 16:373–398.
+
+11)  Tucker, M. A., and T. L. Rogers. 2014. *Examining predator-prey body size, trophic level and body mass across marine and terrestrial mammals.* Proceedings of the Royal Society B: Biological Sciences 281:20142103–20142103.
+
+12)  Woodward, G., Ebenman, B., Emmerson, M., Montoya, J.M., Olesen, J.M., Valido, A. & Warren, P.H. (2005) *Body size in ecological networks.* Trends in Ecology & Evolution, 20, 402–409.
+
+13)  Yom-Tov, Y., and E. Geffen. 2010. *Recent spatial and temporal changes in body size of terrestrial vertebrates: probable causes and pitfalls.* Biological Reviews 86:531–541.
