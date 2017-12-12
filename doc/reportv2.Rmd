@@ -218,8 +218,23 @@ fitdata11 %>%
     ggplot(aes(x = feeding_type, y = fixef(lm11)[[2]] + slope,color = habitat))+
     geom_point() + 
     geom_hline(yintercept = tidy(null)[2,2])+
+    xlab("Type of Feeding")
+    geom_hline(yintercept = tidy(null)[2,2])+
     xlab("Type of Feeding")+
     ylab("Slope of log (Prey mass) vs Log (Predator Mass)")+
+    labs(colour = "Habitat")+
+    jrc_theme()
+
+    geom_hline(yintercept = tidy(null)[2,2])
+
+ggplotly(colourplz)
+
+```
+
+# Discussion
+
+We analyzed predator-prey body size relationships in marine ecosystems 
+>>>>>>> master   ylab("Slope of log (Prey mass) vs Log (Predator Mass)")+
     labs(colour = "Habitat")+
     jrc_theme()
 
@@ -227,7 +242,19 @@ fitdata11 %>%
 
 
 
-```
+
+
+=======
+## Caveats and Limitations 
+
+Several limitations have been identified that may be important in the interpretation of this work. First, while this dataset had over 30,000 entries, much of the data represented nonindependent records. There were multiple records for the same predator, and further, multiple records for the same species that we took into account using a linear mixed effects model. In spite of this, nonindependent observations may have decreased the sample size, thus making it unrepresentative of food webs in marine habitats. For example, out of the whole dataset, 3581 samples are of the Albacore tuna. Statistically, these samples represent a single unit -- consequently, instead of having 3581 samples, there is only 1 sample with 3581 values. As a result, this dataset was limited in what it could actually communicate in terms of how predator-prey body size relationships vary across marine habitats and feeding types. Second, due to the manner in which environmental data was obtained for each dataset, we did not directly include it in our analysis. Instead, because environmental variables correlate with certain habitats and locations, we used specific habitat as a proxy for its effect on body size relationships. It was then not possible to infer exactly what environmetal factors were important in determining predator-prey body size relationships.
+
+
+Third, because this dataset represents a compilation of work done by various studies, this .. For instance,
+
+# Conclusion
+
+
 
 
 
